@@ -1,0 +1,90 @@
+/* Full screen background and center container */
+body, html {
+    height: 100%;
+    margin: 0;
+    background-color: #121212;
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+  
+  /* Shared auth card container */
+  .auth-card {
+    max-width: 600px;
+    width: 500px;
+    padding: 2.5rem 3rem;
+    background: #1e1e1e;
+    border-radius: 12px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.7);
+    text-align: center;
+    color: #eee;
+  }
+  
+  /* Title text */
+  .auth-title {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 2rem;
+    color: white;
+  }
+  
+  /* Auth button */
+  .auth-button {
+    width: 200px;
+    padding: 0.75rem 0;
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+  }
+  
+  /* Hover effect for auth button */
+  .auth-button:hover {
+    background-color: #333;
+  }
+  
+  /* Switch between login/signup */
+  .auth-switch {
+    margin-top: 1.5rem;
+    font-size: 0.9rem;
+    color: #ccc;
+  }
+  
+  /* Link in switch */
+  .auth-link {
+    background: none;
+    border: none;
+    color: white;
+    cursor: pointer;
+    font-weight: 700;
+    margin-left: 6px;
+    transition: color 0.3s ease;
+  }
+  
+  /* Hover effect for link in switch */
+  .auth-link:hover {
+    color: #2f80ed;
+    text-decoration: underline;
+  }
+  
+  /* Error message */
+  .auth-error {
+    margin-top: 1rem;
+    color: #ff5555;
+    font-size: 0.9rem;
+    font-weight: 600;
+  }
+  
+  /* Loading text */
+  .auth-loading {
+    font-size: 1rem;
+    color: #999;
+    margin-top: 1rem;
+  }
+  

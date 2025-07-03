@@ -1,0 +1,24 @@
+/* Main container for the user profile page */
+.user-profile-container {
+  width: 100%;
+  max-width: 1000px;
+  background-color: #1e1e1e;
+  color: white;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.8);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  height: 100%;
+  width: 682px;
+  padding: 20px;
+}
+
+strong {
+  color: white;
+}
+
+
+
+
+
+
+
+

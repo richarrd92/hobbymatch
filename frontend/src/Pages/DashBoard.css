@@ -1,0 +1,19 @@
+/* Main grid container for the homepage layout */
+.home-page {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  grid-template-rows: 60px 1fr 40px;
+  grid-template-areas:
+    "top-bar top-bar"
+    "left-sidebar feed-container"
+    "footer-bar footer-bar";
+  max-width: 1000px;
+  width: 100%;
+  margin: 0 auto;
+  gap: 0;
+  background-color: #121212;
+  color: #eee;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  height: 100vh;
+}

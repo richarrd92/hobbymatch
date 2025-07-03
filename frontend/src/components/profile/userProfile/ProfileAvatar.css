@@ -1,0 +1,44 @@
+/* Profile card container styling */
+.profile-card {
+  display: flex;
+  gap: 1rem;
+}
+
+/* Profile avatar image styling */
+.profile-avatar {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 3px solid #555;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.7);
+  flex-shrink: 0;
+}
+
+/* User's display name */
+.profile-name {
+  margin: 0;
+  font-weight: 700;
+  font-size: 1.75rem; 
+  color: #eee;
+}
+
+/* User email styling */
+.profile-email {
+  margin-top: 0.4rem;
+  margin-bottom: 1rem;
+    color: #eee;
+  font-size: 0.9rem; 
+  font-style: italic;
+}
+
+/* General text fields (age, bio, etc.) styling */
+.profile-text {
+  margin: 0.5rem 0;
+  font-size: 1rem; 
+  line-height: 1.5;
+  color: #eee;
+  max-width: 585px;
+  width: 100%;
+  word-wrap: break-word; 
+}

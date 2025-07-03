@@ -1,0 +1,19 @@
+/* Container for buttons */
+.location-prompt-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+/* Button styles */
+.location-prompt-buttons .btn {
+  flex: 1;
+  min-width: 100px;
+  max-width: 160px;
+  padding: 0.5rem 0.75rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border-radius: 6px;
+  cursor: pointer;
+}

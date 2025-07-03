@@ -1,0 +1,6 @@
+/* Set box-sizing globally to include padding in width */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}

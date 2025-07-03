@@ -1,0 +1,46 @@
+/* Photos section */
+.profile-photos-section {
+  width: 100%;
+  text-align: center;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+/* Photos heading */
+.photos-heading {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #eee;
+  margin-bottom: 1rem;
+}
+
+/* Photos grid */
+.photos-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 100px);
+  gap: 1.2rem;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Photo placeholder */
+.photo-placeholder {
+  width: 100px;
+  height: 100px;
+  background-color: #2e2e2e;
+  border: 1.5px dashed #666;
+  border-radius: 10px;
+  color: #999;
+  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.2s ease;
+}
+
+/* Hover effect for photo placeholder */
+.photo-placeholder:hover {
+  transform: scale(1.05);
+  background-color: #383838;
+  cursor: default;
+}

@@ -1,0 +1,131 @@
+import { useState, useEffect } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+  Outlet,
+} from "react-router-dom";
+import {useAuth} from "./contexts/AuthContext";
+
+import SignUp from "./Pages/SignUp";
+import Login from "./Pages/Login";
+import PageNotFound from "./Pages/PageNotFound";
+
+import NavBar from "../src/components/layout/NavBar";
+import SideBar from "../src/components/layout/SideBar";
+import Footer from "../src/components/layout/Footer";
+import Dashboard from "./Pages/DashBoard";
+
+import Feed from "./Pages/Feed";
+import EditProfile from "./Pages/EditProfile";
+import UserProfile from "./Pages/UserProfile";
+import dummyPosts from "../src/services/functions/dummyPosts";
+
+import PrivateRoute from "../src/Pages/PrivateRoute";
+
+// Main app router and user data fetching with protected routes
+export default function App() {
+  const { token } = useAuth();
+
+  // State for current user info, loading, errors, and refresh flag
+  const [user, setUser] = useState(null);
+  const [loadingUser, setLoadingUser] = useState(true);
+  const [userError, setUserError] = useState(null);
+  const [refreshFlag, setRefreshFlag] = useState(false);
+
+  // Fetch current user info when token or refreshFlag changes
+  useEffect(() => {
+    const fetchUser = async () => {
+      setLoadingUser(true);
+      try {
+        const res = await fetch("http://localhost:8000/users/me", {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+        if (!res.ok) throw new Error(await res.text());
+        const data = await res.json();
+        setUser(data);
+      } catch (err) {
+        setUserError(err.message);
+        setUser(null);
+      } finally {
+        setLoadingUser(false);
+      }
+    };
+
+    if (token) {
+      fetchUser();
+    } else {
+      // No token means no user
+      setUser(null);
+      setLoadingUser(false);
+    }
+  }, [token, refreshFlag]);
+
+  // Show loading or error while fetching user data
+  if (loadingUser) return <div>Loading user info...</div>;
+  if (userError) return <div>Error loading user: {userError}</div>;
+
+  // Dashboard wrapper with layout components and nested routing
+  function ProtectedDashboard() {
+    return (
+      <Dashboard
+        topBar={<NavBar user={user} />}
+        sideBar={<SideBar />}
+        footer={<Footer />}
+      >
+        {/* Nested route components render here */}
+        <Outlet />
+      </Dashboard>
+    );
+  }
+
+  return (
+    <Router>
+      <Routes>
+        {/* Public routes: signup and login */}
+        <Route
+          path="/sign-up"
+          element={!user ? <SignUp /> : <Navigate to="/feed" replace />}
+        />
+        <Route
+          path="/login"
+          element={!user ? <Login /> : <Navigate to="/feed" replace />}
+        />
+
+        {/* Protected routes wrapped in PrivateRoute */}
+        <Route element={<PrivateRoute />}>
+          <Route path="/" element={<ProtectedDashboard />}>
+            <Route index element={<Navigate to="feed" replace />} />
+            <Route path="feed" element={<Feed posts={dummyPosts} />} />
+            <Route
+              path="profile"
+              element={
+                <UserProfile
+                  user={user}
+                  triggerRefresh={() => setRefreshFlag((prev) => !prev)}
+                />
+              }
+            />
+            <Route
+              path="edit-profile"
+              element={
+                <EditProfile
+                  user={user}
+                  triggerRefresh={() => setRefreshFlag((prev) => !prev)}
+                />
+              }
+            />
+            <Route path="*" element={<PageNotFound />} />
+          </Route>
+        </Route>
+
+        {/* Catch-all for unknown paths redirects to login */}
+        <Route path="*" element={<Navigate to="/login" replace />} />
+      </Routes>
+    </Router>
+  );
+}

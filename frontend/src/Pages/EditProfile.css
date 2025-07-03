@@ -1,0 +1,32 @@
+/* Edit Profile Page */
+.edit-profile-page {
+  width: 682px;
+  max-width: 1000px;
+  height: 100vh;
+  background: #1e1e1e;
+  color: white;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.8);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-y: auto;
+  padding: 0 1rem 1rem 2rem;
+}
+
+/* Edit Profile title */
+.edit-profile-title {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+  text-align: center;
+  color: #eee;
+}
+
+/* Error message */
+.error-msg {
+  color: #ff4d4d;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-top: 0.75rem;
+}

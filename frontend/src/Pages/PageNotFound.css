@@ -1,0 +1,46 @@
+/* Container for the 404 page - full height with vertical stacking */
+.page-not-found {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  color: #222;
+  box-sizing: border-box;
+  overflow-y: auto;
+  justify-content: center;
+  padding: 2rem 3rem;
+  text-align: center;
+  align-items: stretch;
+  max-width: none; 
+}
+
+/* Main heading style on the 404 page */
+.page-not-found h2 {
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+/* Paragraph text style on the 404 page */
+.page-not-found p {
+  font-size: 1.1rem;
+  color: #555;
+}
+
+/* Styled button on the 404 page */
+.page-not-found .btn {
+  padding: 0.8rem 1.6rem;
+  border: none;
+  border-radius: 6px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  transition: background-color 0.2s ease;
+}
+
+/* Button hover effect */
+.page-not-found .btn:hover {
+  background-color: #0069d9;
+}
