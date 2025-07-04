@@ -1,99 +1,16 @@
-from fastapi import APIRouter, Depends, HTTPException, status
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi.security import HTTPBearer
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
-import firebase_admin
-from firebase_admin import auth, credentials, initialize_app
 from models import User, UserRole
 from database import get_db
 from schemas import LoginRequest, LoginResponse, SignupRequest
 from logger import logger
-import os
-from dotenv import load_dotenv
-import cloudinary
-import cloudinary.uploader
-
-# Load environment variables
-load_dotenv()
-
-# Configure Cloudinary
-cloudinary.config(
-    cloud_name=os.getenv("CLOUDINARY_CLOUD_NAME"),
-    api_key=os.getenv("CLOUDINARY_API_KEY"),
-    api_secret=os.getenv("CLOUDINARY_API_SECRET"),
-    secure=True,
-)
-
-# Initialize Firebase Admin SDK once
-if not firebase_admin._apps:
-    cred = credentials.Certificate("./secrets/hobbymatch-app-firebase-adminsdk-fbsvc-2e7e43ad02.json")
-    initialize_app(cred)
-    logger.info("Firebase Admin SDK initialized")
+from utils.firebase_token import verify_firebase_token
 
 # Define API router for authentication endpoints
 router = APIRouter(prefix="/auth", tags=["Authentication"])
 security = HTTPBearer() # HTTP Bearer scheme for token auth
-
-# Verifies Firebase ID token and returns decoded payload
-def verify_firebase_token(id_token: str):
-    try:
-        decoded = auth.verify_id_token(id_token)
-
-        # Check if email is verified
-        if not decoded.get("email_verified", False):
-            logger.error("Email not verified")
-            raise HTTPException(status_code=401, detail="Email not verified")
-        logger.info("Token verified")
-        return decoded # Decoded token
-    
-    # Handle token verification errors
-    except Exception as e:
-        logger.error(f"Token verification failed: {e}")
-        raise HTTPException(status_code=401, detail="Invalid Firebase token")
-
-# Get current user from token
-async def get_current_user(
-    credentials: HTTPAuthorizationCredentials = Depends(security),
-    db: AsyncSession = Depends(get_db),
-) -> User:
-    token = credentials.credentials
-    decoded_token = verify_firebase_token(token)
-    firebase_uid = decoded_token.get("uid")
-
-    # Check if the token has a valid Firebase UID
-    if not firebase_uid:
-        logger.error("Token missing UID")
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token missing UID")
-
-    # Get the user from the database
-    result = await db.execute(select(User).where(User.firebase_uid == firebase_uid))
-    user = result.scalars().first()
-
-    # Check if the user exists
-    if not user:
-        logger.error("User not found")
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
-
-    logger.info("User authenticated")
-    return user # Return the user
-
-# Upload base64 image to Cloudinary, return URL
-async def upload_base64_image_to_cloudinary(base64_str: str) -> str:
-
-    # Cloudinary expects a data URI scheme with MIME type prefix
-    data_uri = f"data:image/jpeg;base64,{base64_str}"
-    try:
-        resp = cloudinary.uploader.upload(data_uri)
-        url = resp.get("secure_url") # Get the secure URL of the uploaded image
-        if not url:
-            logger.error("No URL returned from Cloudinary")
-            raise Exception("No URL returned from Cloudinary")
-        return url
-    
-    # Handle Cloudinary upload errors
-    except Exception as e:
-        logger.error(f"Cloudinary upload error: {e}")
-        raise HTTPException(status_code=500, detail="Failed to upload image")
 
 # Signup new user using Firebase token
 @router.post("/signup", response_model=LoginResponse)

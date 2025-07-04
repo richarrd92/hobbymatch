@@ -23,6 +23,12 @@
   color: #eee;
 }
 
+.location-section {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+}
+
 /* Error message */
 .error-msg {
   color: #ff4d4d;

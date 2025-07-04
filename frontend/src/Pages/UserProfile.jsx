@@ -2,7 +2,6 @@ import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import ProfileAvatar from "../components/profile/UserProfile/ProfileAvatar";
 import ProfileDetails from "../components/profile/UserProfile/ProfileDetails";
-import PhotosGridPlaceholder from "../components/profile/PhotosGridPlaceholder";
 import ProfileButtons from "../components/profile/UserProfile/ProfileButtons";
 import "./UserProfile.css";
 
@@ -32,9 +31,6 @@ export default function UserProfile({ user }) {
         />
         <ProfileDetails user={user} formatDate={formatDate} />
       </div>
-
-      {/* Placeholder for photos (future feature) */}
-      <PhotosGridPlaceholder />
 
       {/* Buttons for editing, canceling (go feed), and logging out */}
       <ProfileButtons

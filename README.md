@@ -8,10 +8,6 @@ Built on a modern full-stack architecture leveraging ***React***, ***FastAPI***,
 
 > **Progress.md** outlines the current development status of the application, including implemented features, architectural notes, and known issues.
 
-
-
-
-
 ### Project Objectives
 
 HobbyMatch is designed to:

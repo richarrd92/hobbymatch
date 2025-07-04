@@ -12,6 +12,7 @@ export default function FormButtons({ loading, onRequestLocation, onCancel }) {
         flexWrap: "wrap",
         width: "100%",
       }}
+      className="location-section"
     >
       {/* Button to request current location */}
       <button

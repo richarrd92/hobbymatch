@@ -4,7 +4,6 @@ import ProfilePictureUploader from "../components/profile/editProfile/ProfilePic
 import BasicInfoForm from "../components/profile/editProfile/BasicInfoForm";
 import LocationPrompt from "../components/profile/editProfile/LocationPrompt";
 import DetectedLocationDisplay from "../components/profile/editProfile/DetectedLocationDisplay";
-import PhotosGridPlaceholder from "../components/profile/PhotosGridPlaceholder";
 import FormButtons from "../components/profile/editProfile/FormButtons";
 import ErrorMessage from "../components/profile/editProfile/ErrorMessage";
 import { resolveLocation, updateUserProfile } from "../services/API/profileAPI";
@@ -165,11 +164,8 @@ export default function EditProfile({ user, triggerRefresh }) {
           <DetectedLocationDisplay location={resolvedLocation} />
         )}
 
-        {/* Placeholder for future photos feature */}
-        <PhotosGridPlaceholder />
-
         {/* Location-related buttons and prompt */}
-        <section className="location-section">
+        <section >
           {!showLocationPrompt && (
             <FormButtons
               loading={loading}

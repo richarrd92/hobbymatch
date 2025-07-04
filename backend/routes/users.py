@@ -5,17 +5,13 @@ from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
 from typing import List
 import base64
-import hashlib
-import asyncio
-import time
-
 from models import User, Location, UserRole
 from schemas import UserRead, UserProfileUpdate
 from database import get_db
-from .auth import get_current_user
 from logger import logger
-
-import cloudinary.uploader
+from utils.admin import require_admin
+from utils.cloudinary import upload_photo_to_cloudinary
+from utils.current_user import get_current_user
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -33,12 +29,6 @@ ALLOWED_PROFILE_UPDATE_FIELDS = [
     "name", "age", "bio", "profile_pic_url", "location_id", "is_private"
 ]
 
-# Helper: Ensure the user is an Admin
-def require_admin(current_user: User):
-    if current_user.role != UserRole.user: # TODO: Change to admin later
-        logger.warning(f"Unauthorized access attempt by {current_user.email}")
-        raise HTTPException(status_code=403, detail="Not authorized - admin required")
-    return current_user
 
 # Retrieve a paginated list of users with optional filtering, searching, and sorting.
 @router.get("/", response_model=List[UserRead])
@@ -147,49 +137,6 @@ async def get_my_profile(
         logger.error(f"Failed to load user profile for {current_user.email}: {e}")
         raise HTTPException(status_code=500, detail="Failed to load profile")
 
-# Upload a photo to Cloudinary and return the URL
-async def upload_photo_to_cloudinary(file_bytes: bytes, user_id: int, tag: str = None) -> str:
-    # Check image size limit
-    if len(file_bytes) > MAX_IMAGE_SIZE_BYTES:
-        max_mb = MAX_IMAGE_SIZE_BYTES / (1024 * 1024)
-        logger.error(f"Image too large for {user_id}: {max_mb:.1f} MB")
-        raise HTTPException(status_code=400, detail=f"Image too large (max {max_mb:.1f} MB)")
-
-    # Generate unique public ID for Cloudinary
-    public_id = f"user_{user_id}_{tag or hashlib.md5(file_bytes).hexdigest()}"
-    max_retries = 3  # Number of retries
-
-    # Try uploading with retries
-    for attempt in range(max_retries):
-        try:
-            # Upload to Cloudinary
-            resp = cloudinary.uploader.upload(
-                file_bytes,
-                resource_type="image",
-                folder="user_photos",
-                public_id=public_id,
-                overwrite=True,
-                invalidate=True,
-            )
-            url = resp.get("secure_url")
-
-            # Check if upload was successful
-            if not url:
-                logger.error("Cloudinary upload did not return a URL")
-                raise Exception("Cloudinary upload did not return a URL")
-            return url
-        
-        # Handle Cloudinary upload errors
-        except Exception as e:
-            logger.error(f"Cloudinary upload attempt {attempt + 1} failed: {e}")
-
-            # Retry after delay if attempts remain
-            if attempt < max_retries - 1:
-                await asyncio.sleep(1)
-            else:
-                # Raise error after max retries
-                logger.error(f"Cloudinary upload failed after {max_retries} attempts")
-                raise HTTPException(status_code=500, detail="Failed to upload image")
 
 # Update the current user's profile with optional fields and profile picture upload
 @router.patch("/me", response_model=UserRead)
