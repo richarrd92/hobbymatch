@@ -3,7 +3,6 @@ from .enums import MatchStatus, MatchType, ReactionType, EventType, Notification
 
 # SQLAlchemy models for each main entity in the app
 from .hobbies import Hobby
-from .hobby_tags import HobbyTag
 from .locations import Location
 from .matches import Match
 from .messages import Message
@@ -12,7 +11,6 @@ from .notifications import Notification
 from .post_comments import PostComment
 from .user_hobbies import UserHobby
 from .post_reactions import PostReaction
-from .tags import Tag
 from .users import User
 from .user_posts import UserPost
 from .base import Base
@@ -28,7 +26,6 @@ __all__ = [
     "RsvpStatus",
     "HobbyCategory",
     "Hobby",
-    "HobbyTag",
     "Location",
     "Match",
     "Message",
@@ -37,7 +34,6 @@ __all__ = [
     "PostComment",
     "UserHobby",
     "PostReaction",
-    "Tag",
     "User",
     "UserPost",
     "UserPhoto",

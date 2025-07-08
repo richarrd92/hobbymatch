@@ -1,52 +1,39 @@
-import logging
-import sys
-import os
-from logging.handlers import RotatingFileHandler
-from datetime import datetime
+import logging  
+import sys    
 
-def setup_logger(log_dir="logs", max_bytes=5 * 1024 * 1024, backup_count=5, level=logging.INFO):
-    """
-    Setup logger with console and rotating file handlers.
-    - max_bytes: max file size before rotation (default 5MB)
-    - backup_count: number of backup files to keep
-    - log files named by current date and hour
-    """
+# Sets up a logger that writes to both console and file.
+def setup_logger(log_file="app.log", level=logging.INFO):
 
-    # Create log directory if it doesn't exist
-    if not os.path.exists(log_dir):
-        os.makedirs(log_dir)
-
-    # Log filename format: app_YYYY-MM-DD_HH00.log
-    log_file = os.path.join(log_dir, f"app_{datetime.now().strftime('%Y-%m-%d_%H00')}.log")
-
-    # Create logger
     logger = logging.getLogger()
     logger.setLevel(level)
 
-    # Clear existing handlers to prevent duplication
+    # Clear existing handlers to avoid duplicate logs
     if logger.hasHandlers():
         logger.handlers.clear()
 
+    # Define consistent log format
     formatter = logging.Formatter('%(asctime)s [%(levelname)s] %(message)s')
 
-    # Console handler
+    # Console handler (stdout)
     console_handler = logging.StreamHandler(sys.stdout)
     console_handler.setFormatter(formatter)
     logger.addHandler(console_handler)
 
-    # Rotating file handler
-    file_handler = RotatingFileHandler(log_file, maxBytes=max_bytes, backupCount=backup_count)
+    # File handler (log file)
+    file_handler = logging.FileHandler(log_file)
     file_handler.setFormatter(formatter)
     logger.addHandler(file_handler)
 
     return logger
 
-# Global logger instance
+# Create a global logger instance
 logger = setup_logger()
 
+# Example usage
 if __name__ == "__main__":
     logger.info("Logger initialized")
     try:
-        1 / 0
+        1 / 0  # Simulate an error
     except Exception as e:
+        # Log error with traceback
         logger.error(f"An error occurred: {e}", exc_info=True)

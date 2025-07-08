@@ -4,25 +4,17 @@ import {
   Routes,
   Route,
   Navigate,
-  Outlet,
 } from "react-router-dom";
-import {useAuth} from "./contexts/AuthContext";
-
+import { useAuth } from "./contexts/AuthContext";
 import SignUp from "./Pages/SignUp";
 import Login from "./Pages/Login";
 import PageNotFound from "./Pages/PageNotFound";
-
-import NavBar from "../src/components/layout/NavBar";
-import SideBar from "../src/components/layout/SideBar";
-import Footer from "../src/components/layout/Footer";
-import Dashboard from "./Pages/DashBoard";
-
 import Feed from "./Pages/Feed";
 import EditProfile from "./Pages/EditProfile";
 import UserProfile from "./Pages/UserProfile";
 import dummyPosts from "../src/services/functions/dummyPosts";
-
 import PrivateRoute from "../src/Pages/PrivateRoute";
+import HomePage from "./Pages/HomePage";
 
 // Main app router and user data fetching with protected routes
 export default function App() {
@@ -45,7 +37,11 @@ export default function App() {
             Authorization: `Bearer ${token}`,
           },
         });
+
+        // Throw error if response not ok
         if (!res.ok) throw new Error(await res.text());
+
+        // Set user info
         const data = await res.json();
         setUser(data);
       } catch (err) {
@@ -71,16 +67,7 @@ export default function App() {
 
   // Dashboard wrapper with layout components and nested routing
   function ProtectedDashboard() {
-    return (
-      <Dashboard
-        topBar={<NavBar user={user} />}
-        sideBar={<SideBar />}
-        footer={<Footer />}
-      >
-        {/* Nested route components render here */}
-        <Outlet />
-      </Dashboard>
-    );
+    return <HomePage user={user} />;
   }
 
   return (

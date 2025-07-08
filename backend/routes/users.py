@@ -1,11 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException, Query
-from sqlalchemy import asc, desc, or_
+from sqlalchemy import asc, delete, desc, or_
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy.future import select
 from sqlalchemy.orm import selectinload
 from typing import List
 import base64
-from models import User, Location, UserRole
+from models import User, Location, UserRole, UserHobby, Hobby
 from schemas import UserRead, UserProfileUpdate
 from database import get_db
 from logger import logger
@@ -137,7 +137,6 @@ async def get_my_profile(
         logger.error(f"Failed to load user profile for {current_user.email}: {e}")
         raise HTTPException(status_code=500, detail="Failed to load profile")
 
-
 # Update the current user's profile with optional fields and profile picture upload
 @router.patch("/me", response_model=UserRead)
 async def update_my_profile(
@@ -145,74 +144,87 @@ async def update_my_profile(
     db: AsyncSession = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    # Extract only provided fields
     updates = update.dict(exclude_unset=True)
 
-    # Validate location_id if provided
+    # Validate location if provided
     if "location_id" in updates:
         loc_result = await db.execute(select(Location).filter(Location.id == updates["location_id"]))
-
-        # Check if location exists
         if not loc_result.scalars().first():
             logger.error(f"Invalid location_id: {updates['location_id']}")
             raise HTTPException(status_code=400, detail="Invalid location_id")
 
-    # Handle profile picture upload (single image only)
+    # Handle profile picture upload from base64
     if "profile_pic_base64" in updates:
         b64data = updates.pop("profile_pic_base64")
-
-        # Validate base64 data
         if not b64data or len(b64data) < 100:
-            logger.error(f"Invalid profile picture data: {b64data}")
+            logger.error(f"Invalid profile picture data for user {current_user.email}")
             raise HTTPException(status_code=400, detail="Invalid profile picture data")
         try:
-            # Decode base64 data
             file_bytes = base64.b64decode(b64data)
-            profile_pic_url = await upload_photo_to_cloudinary(file_bytes, current_user.id, "profile") # Upload
+            if len(file_bytes) > MAX_IMAGE_SIZE_BYTES:
+                logger.error(f"Profile picture too large for user {current_user.email}")
+                raise HTTPException(status_code=400, detail="Profile picture exceeds size limit")
+            profile_pic_url = await upload_photo_to_cloudinary(file_bytes, current_user.id, "profile")
             updates["profile_pic_url"] = profile_pic_url
             logger.info(f"Profile pic uploaded for {current_user.email}")
-        
-        # Handle Cloudinary upload errors
         except Exception as e:
             logger.error(f"Profile pic upload failed for {current_user.email}: {e}")
             raise HTTPException(status_code=500, detail="Failed to upload profile picture")
-        
-    # TODO: Implement upload and storage for 3 additional profile photos (e.g., photos_base64[])
-    # - Accept multiple base64 strings
-    # - Decode and upload each to Cloudinary with distinct tags (e.g., "photo1", "photo2", etc.)
-    # - Store URLs in a separate related model or field
 
-    # Update allowed user fields
+    # Update standard user fields
     for field in ALLOWED_PROFILE_UPDATE_FIELDS:
         if field in updates and updates[field] is not None:
             setattr(current_user, field, updates[field])
 
-    # Commit updates or rollback on error
+    # Handle hobby updates (exactly 3 hobbies required)
+    if "hobby_ids" in updates:
+        hobby_ids = updates.pop("hobby_ids")
+        if not isinstance(hobby_ids, list) or len(hobby_ids) != 3:
+            logger.error(f"Invalid hobby_ids length for user {current_user.email}: {hobby_ids}")
+            raise HTTPException(status_code=400, detail="You must select exactly 3 hobbies")
+
+        # Validate hobbies exist in hobbies table
+        hobby_query = await db.execute(select(Hobby.id).where(Hobby.id.in_(hobby_ids)))
+        valid_hobby_ids = set(str(h) for h in hobby_query.scalars().all())
+        if set(map(str, hobby_ids)) != valid_hobby_ids:
+            logger.error(f"Invalid hobby IDs provided by user {current_user.email}: {hobby_ids}")
+            raise HTTPException(status_code=400, detail="One or more hobby IDs are invalid")
+
+        # Delete existing user hobbies
+        await db.execute(delete(UserHobby).where(UserHobby.user_id == current_user.id))
+
+        # Add new user hobbies with rank 1-3
+        new_user_hobbies = [
+            UserHobby(user_id=current_user.id, hobby_id=hobby_id, rank=rank)
+            for rank, hobby_id in enumerate(hobby_ids, start=1)
+        ]
+        db.add_all(new_user_hobbies)
+        logger.info(f"Updated hobbies for user {current_user.email}")
+
+    # Commit all changes
     try:
         await db.commit()
-        logger.info(f"User {current_user.email} updated profile")
+        logger.info(f"User {current_user.email} updated profile successfully")
     except Exception as e:
         await db.rollback()
-        logger.error(f"Profile update failed for user {current_user.email}: {e}")
+        logger.error(f"Failed to update profile for user {current_user.email}: {e}")
         raise HTTPException(status_code=500, detail="Internal server error")
 
-    # Reload user with location to avoid lazy loading issues
-    # TODO: Add selectinload for hobbies, matches_initiated, matches_received as project expands
+    # Reload user with location and hobbies for response
     try:
         result = await db.execute(
             select(User)
-            .options(selectinload(User.location))
+            .options(
+                selectinload(User.location),
+                selectinload(User.user_hobbies).selectinload(UserHobby.hobby)
+            )
             .filter(User.id == current_user.id)
         )
-
-        # Updated user with location preloaded
         refreshed_user = result.scalar_one()
-
     except Exception as e:
-        logger.error(f"Failed to reload user after update: {e}")
+        logger.error(f"Failed to reload user after update for {current_user.email}: {e}")
         raise HTTPException(status_code=500, detail="Failed to reload user data")
 
-    logger.info(f"User {refreshed_user.email} updated profile")
     return refreshed_user
 
 

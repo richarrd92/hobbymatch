@@ -28,14 +28,22 @@ class NotificationType(str, enum.Enum):
 
 # Categories of hobbies
 class HobbyCategory(str, enum.Enum):
-    sports = "sports"
-    entertainment = "entertainment"
-    education = "education"
-    games = "games"
-    arts = "arts"
-    technology = "technology"
-    outdoors = "outdoors"
-    other = "other"
+    Sports = "Sports"
+    Outdoors = "Outdoors"
+    Creative = "Creative"
+    Music = "Music"
+    Culinary = "Culinary"
+    Crafts = "Crafts"
+    Tech = "Tech"
+    Games = "Games"
+    Lifestyle = "Lifestyle"
+    Wellness = "Wellness"
+    Fitness = "Fitness"
+    Entertainment = "Entertainment"
+    Nature = "Nature"
+    Finance = "Finance"
+    Community = "Community"
+    Academic = "Academic"
 
 # Types of reactions users can give
 class ReactionType(str, enum.Enum):

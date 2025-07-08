@@ -1,0 +1,126 @@
+/* Main grid container for the homepage layout */
+.home-page {
+  display: grid;
+  grid-template-columns: 250px 1fr;
+  grid-template-rows: 60px 1fr 40px;
+  grid-template-areas:
+    "top-bar top-bar"
+    "left-sidebar feed-container"
+    "footer-bar footer-bar";
+  max-width: 1000px;
+  width: 100%;
+  margin: 0 auto;
+  gap: 0;
+  background-color: #121212;
+  color: #eee;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  height: 100vh;
+}
+
+/* Top navigation bar styling */
+.top-bar {
+  grid-area: top-bar;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1rem;
+  height: 60px;
+  background-color: #1e1e1e; /* dark gray */
+  border-bottom: 1px solid #333;
+  z-index: 10;
+}
+
+/* Logo text inside nav bar */
+.logo {
+  grid-column: 2;
+  text-align: center;
+  font-size: 1.6rem;
+  color: #eee;
+  font-weight: 600;
+  margin: 0;
+}
+
+/* User avatar image in nav bar */
+.avatar {
+  grid-column: 3;
+  justify-self: end;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  object-fit: cover;
+  cursor: pointer;
+  border: 2px solid #555;
+}
+
+/* Left sidebar container */
+.left-sidebar {
+  grid-area: left-sidebar;
+  background-color: #1e1e1e;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  border-right: 1px solid #333;
+  box-shadow: inset -1px 0 0 #2a2a2a;
+  overflow-y: auto;
+  height: calc(100vh - 100px);
+}
+
+/* Sidebar buttons */
+.left-sidebar .sidebar-btn {
+  background-color: black;
+  color: white;
+  border: 1px solid #333;
+  padding: 0.7rem 1rem;
+  border-radius: 6px;
+  cursor: pointer;
+  text-align: left;
+  font-weight: 600;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* Hover effect for sidebar buttons */
+.left-sidebar .sidebar-btn:hover {
+  background-color: #333;
+}
+
+/* Footer bar container */
+.footer-bar {
+  grid-area: footer-bar;
+  background-color: #1e1e1e;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  border-top: 1px solid #333;
+  padding: 0.75rem 1rem;
+  color: #aaa;
+  height: 40px;
+  z-index: 10;
+}
+
+/* Footer text styling */
+.footer-text {
+  color: #777;
+  font-weight: 400;
+  color: white;
+}
+
+/* Links inside footer text */
+.footer-text a {
+  background: none;
+  border: none;
+  color: white;
+  cursor: pointer;
+  margin-left: 6px;
+  transition: color 0.3s ease;
+  text-decoration: none;
+}
+
+/* Hover effect for footer links */
+.footer-text a:hover {
+  color: #2f80ed;
+  text-decoration: underline;
+}

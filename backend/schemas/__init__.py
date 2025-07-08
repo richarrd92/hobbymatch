@@ -1,8 +1,7 @@
 from .auth import LoginResponse, SignupRequest, LoginRequest
-from .hobbies import HobbyCreate, HobbyRead, HobbyBase
+from .hobbies import HobbyCreate, HobbyRead, HobbyBase, HobbyUpdate, HobbyUpdateRequest, UserHobbyBase, UserHobbyRead
 from .locations import LocationRead, LocationBase, LocationCreate, LocationResolveRequest
 from .matches import MatchRead, MatchBase, MatchCreate
-from .user_hobbies import UserHobbyCreate, UserHobbyRead, UserHobbyBase
 from .users import UserBase, UserCreate, UserRead, UserProfileUpdate
 
 # Export all schemas
@@ -13,6 +12,8 @@ __all__ = [
     "HobbyCreate",
     "HobbyRead",
     "HobbyBase",
+    "HobbyUpdate",
+    "HobbyUpdateRequest",
     "LocationRead",
     "LocationBase",
     "LocationCreate",
@@ -20,11 +21,10 @@ __all__ = [
     "MatchRead",
     "MatchBase",
     "MatchCreate",
-    "UserHobbyCreate",
-    "UserHobbyRead",
-    "UserHobbyBase",
     "UserBase",
     "UserCreate",
     "UserRead",
-    "UserProfileUpdate"
+    "UserProfileUpdate",
+    "UserHobbyRead",
+    "UserHobbyBase"
 ]

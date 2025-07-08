@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState } from "react";
 import { firebaseSignIn } from "../services/auth/firebaseAuth";
-import { backendLogin, backendSignup } from "../services/API/authAPI";
+import { backendLogin, backendSignup } from "../services/API/auth";
 import {
   saveAuthUser,
   loadAuthUser,

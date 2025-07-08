@@ -28,6 +28,6 @@ class User(Base):
 
     # Relationships
     location = relationship("Location", backref="users")
-    hobbies = relationship("UserHobby", cascade="all, delete", back_populates="user")
+    user_hobbies = relationship("UserHobby", cascade="all, delete", back_populates="user")
     matches_initiated = relationship("Match", foreign_keys="Match.initiator_id", back_populates="initiator")
     matches_received = relationship("Match", foreign_keys="Match.receiver_id", back_populates="receiver")

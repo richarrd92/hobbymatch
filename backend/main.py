@@ -3,7 +3,7 @@ from contextlib import asynccontextmanager
 from fastapi.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware 
 from logger import logger
-from routes import auth, users, locations
+from routes import auth, users, locations, hobbies
 
 # Lifespan handler for startup and shutdown
 @asynccontextmanager
@@ -18,7 +18,6 @@ app = FastAPI(lifespan=lifespan)
 origins = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
-    "http://localhost",
 ]
 
 app.add_middleware(
@@ -43,6 +42,7 @@ app.add_middleware(CORPMiddleware)
 app.include_router(auth.router)
 app.include_router(users.router)
 app.include_router(locations.router)
+app.include_router(hobbies.router)
 
 # Health check route
 @app.get("/")

@@ -11,7 +11,7 @@
   flex-direction: column;
   align-items: center;
   overflow-y: auto;
-  padding: 0 1rem 1rem 2rem;
+  padding: 0 2rem 1rem 2rem;
 }
 
 /* Edit Profile title */
@@ -23,6 +23,22 @@
   color: #eee;
 }
 
+/* Profile picture preview styling */
+.profile-preview {
+  width: 130px;
+  height: 130px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid #555;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.6);
+  cursor: pointer;
+  display: block;
+  justify-content: center;
+  align-items: center;
+  margin: 0 auto;
+}
+
+/* Location section styling */
 .location-section {
   display: flex;
   justify-content: center;
@@ -35,4 +51,227 @@
   font-weight: 600;
   font-size: 0.9rem;
   margin-top: 0.75rem;
+}
+
+/* Edit Form */
+.edit-profile-form {
+  width: 100%;
+  border: none;
+  padding: 0;
+}
+
+/* Labels */
+.edit-profile-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: #eee;
+  margin-bottom: 0.7rem;
+}
+
+/* Inputs, Textareas, Selects */
+.edit-profile-form input[type="text"],
+.edit-profile-form input[type="number"],
+.edit-profile-form input[type="file"],
+.edit-profile-form textarea,
+.edit-profile-form select,
+.edit-profile-form input[type="search"] {
+  width: 100%;
+  padding: 0.5rem 0.7rem;
+  font-size: 0.95rem;
+  background: #2a2a2a;
+  color: #eee;
+  border: 1px solid #555;
+  border-radius: 6px;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, background-color 0.3s ease;
+}
+
+/* Focus Styles */
+.edit-profile-form input:focus,
+.edit-profile-form textarea:focus,
+.edit-profile-form select:focus,
+.edit-profile-form input[type="search"]:focus {
+  border-color: black;
+  background-color: #1e1e1e;
+  outline: none;
+}
+
+/* Textarea Resize */
+.edit-profile-form textarea {
+  resize: vertical;
+  min-height: 50px;
+  height: 50px;
+  max-height: 100px;
+}
+
+/* Hobbies Section */
+.edit-profile-hobbies {
+  margin-top: 1.5rem;
+}
+
+/* Hobby list below search */
+.edit-profile-hobby-list {
+  list-style: none;
+  padding: 0;
+  margin: 0.3rem 0 0 0;
+  max-height: 180px;
+  overflow-y: auto;
+  border: 1px solid #444;
+  border-radius: 6px;
+  background-color: #222;
+}
+
+/* Individual Hobby Item */
+.edit-profile-hobby-item {
+  padding: 0.4rem 0.6rem;
+  border-bottom: 1px solid #444;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 0.9rem;
+  color: #eee;
+  cursor: pointer;
+  user-select: none;
+}
+
+/* Last Hobby Item */
+.edit-profile-hobby-item:last-child {
+  border-bottom: none;
+}
+
+/* Hover Effect */
+.edit-profile-hobby-item:hover {
+  background-color: #2c2c2c;
+}
+
+/* Label inside list item */
+.edit-profile-hobby-item label {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex-grow: 1;
+}
+
+/* Hobby name text */
+.edit-profile-hobby-item label span {
+  font-style: italic;
+  font-size: 0.8rem;
+  color: #999;
+}
+
+/* Rank badge */
+.edit-profile-hobby-item strong {
+  font-weight: 600;
+  color: #88cc88;
+  font-size: 0.85rem;
+  margin-left: 0.4rem;
+  white-space: nowrap;
+}
+
+/* Clear button next to select */
+.hobby-clear-btn {
+  background: transparent;
+  border: none;
+  color: #ff5e5e;
+  font-weight: bold;
+  font-size: 0.4rem;
+  cursor: pointer;
+  /* padding: 0 0.4rem; */
+  transition: color 0.2s ease;
+  user-select: none;
+}
+
+/* Hover effect for clear button */
+.hobby-clear-btn:hover {
+  color: #ff8888;
+}
+
+/* Detected location display */
+.location-display {
+  margin: 1rem auto;
+  font-style: italic;
+  color: #aaa;
+  font-size: 0.9rem;
+  background-color: #2a2a2a;
+  padding: 0.6rem 1rem;
+  border-radius: 8px;
+  border: 1px solid #555;
+  text-align: center;
+  max-width: 440px;
+}
+
+/* Buttons */
+.btn {
+  padding: 0.5rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+}
+
+/* Primary button style (e.g., Update Profile) */
+.primary-btn {
+  background-color: black;
+  color: white;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+/* Hover effect for primary button */
+.primary-btn:hover {
+  background-color: #111;
+}
+
+/* Secondary button style (e.g., Cancel) */
+.btn-secondary {
+  background-color: #444;
+  color: #eee;
+  border: 1px solid #555;
+}
+
+/* Hover effect for secondary button */
+.btn-secondary:hover {
+  background-color: #555;
+}
+
+/* Location button */
+.location-button {
+  margin: 0;
+}
+
+/* Location prompt */
+.location-prompt {
+  background-color: #2a2a2a;
+  padding: 1rem 1.25rem;
+  border-radius: 8px;
+  border: 1px solid #555;
+  text-align: center;
+  font-size: 0.95rem;
+  color: #ccc;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.7);
+  max-width: 440px;
+  margin: 1rem auto;
+}
+
+/* Container for buttons */
+.location-prompt-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+
+/* Button styles */
+.location-prompt-buttons .btn {
+  flex: 1;
+  min-width: 100px;
+  max-width: 160px;
+  padding: 0.5rem 0.75rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  border-radius: 6px;
+  cursor: pointer;
 }

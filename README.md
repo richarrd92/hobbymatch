@@ -6,7 +6,7 @@ Built on a modern full-stack architecture leveraging ***React***, ***FastAPI***,
 
 > **Note:** Each major directory in the project — `/backend` and `/frontend` — includes its own `README.md` file. These contain detailed explanations of the internal architecture, module responsibilities, API usage, and how each layer fits together within the full-stack ecosystem. Contributors are encouraged to read them before diving into the codebase.
 
-> **Progress.md** outlines the current development status of the application, including implemented features, architectural notes, and known issues.
+> **Progress.md** outlines the current development status of the application, including implemented features through quick video walkthroughs.
 
 ### Project Objectives
 

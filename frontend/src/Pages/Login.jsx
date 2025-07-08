@@ -1,12 +1,12 @@
 import { useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
-import AuthCard from "../components/auth/AuthCard";
+import AuthCard from "../components/AuthCard";
 
 // Handles user login via Google using auth context
 export default function Login() {
   const { login } = useAuth();
-  const [loading, setLoading] = useState(false); // Loading state during login
-  const [errorMsg, setErrorMsg] = useState(""); // Error message to show if login fails
+  const [loading, setLoading] = useState(false);
+  const [errorMsg, setErrorMsg] = useState("");
 
   // Trigger login process
   const handleLogin = async () => {

@@ -1,16 +1,13 @@
 # How `logger.py` Works
 
-This module provides a centralized logging utility for the HobbyMatch backend, supporting both console output and rotating log files.
+This module provides a centralized logging utility for Python applications, supporting both console output and basic file logging.
 
 ### Core Function: `setup_logger()`
 
 - Configures the root logger with:
   - Console logging (stdout)
-  - Rotating file logging with automatic file rollover based on file size (default 5MB)
-- Log files are stored in a configurable directory (`logs` by default).
-- Log files are named with date and hour in the format:  
-  `app_YYYY-MM-DD_HH00.log` (e.g., `app_2025-07-01_1400.log`)
-- Keeps a configurable number of backup log files (default 5).
+  - File logging to a specified filename (`app.log` by default)
+- Log file is saved in the current working directory (or wherever specified via `log_file`).
 - Uses a consistent log format including timestamp, level, and message:
 
 ```
@@ -22,7 +19,7 @@ This module provides a centralized logging utility for the HobbyMatch backend, s
 ### Module-Level Logger Instance
 
 - A global `logger` instance is created by default (`logger = setup_logger()`).
-- This instance can be imported and used throughout the backend for consistent logging.
+- This instance can be imported and used throughout the application for consistent logging.
 
 ### Direct Script Execution
 
@@ -33,10 +30,9 @@ When run as a standalone script (`python logger.py`):
 ### Summary
 
 This logging setup:
-- Enables clean and consistent logging to both console and file.
-- Supports automatic log file rotation to prevent oversized files.
-- Organizes logs by date and hour for easy identification.
+- Enables clean and consistent logging to both console and a flat log file.
+- Keeps implementation simple and lightweight.
 - Prevents duplicate logging handlers.
-- Provides an easy-to-import global logger instance for uniform use across the app.
+- Provides an easy-to-import global logger instance for uniform use across the project.
 
-*This approach improves maintainability and debuggability of HobbyMatch backend logs.*
+*This approach improves visibility and maintainability in small to medium Python apps.*

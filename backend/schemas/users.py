@@ -42,6 +42,7 @@ class UserProfileUpdate(BaseModel):
     photos_base64: Optional[List[str]] = Field(default_factory=list)
     photos_urls: Optional[List[str]] = Field(default_factory=list)
     profile_pic_base64: Optional[str] = None
+    hobby_ids: Optional[List[UUID]] = None
 
 # TODO:
 # - Add fields to UserRead for hobbies, photos, and matches relationships

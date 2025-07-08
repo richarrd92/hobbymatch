@@ -5,6 +5,8 @@ from logger import logger
 import os
 from dotenv import load_dotenv
 import cloudinary
+import cloudinary.uploader
+from io import BytesIO 
 
 # Load environment variables
 load_dotenv()
@@ -37,7 +39,7 @@ async def upload_photo_to_cloudinary(file_bytes: bytes, user_id: int, tag: str =
         try:
             # Upload to Cloudinary
             resp = cloudinary.uploader.upload(
-                file_bytes,
+                BytesIO(file_bytes),
                 resource_type="image",
                 folder="user_photos",
                 public_id=public_id,
@@ -67,18 +69,18 @@ async def upload_photo_to_cloudinary(file_bytes: bytes, user_id: int, tag: str =
 
 # Upload base64 image to Cloudinary, return URL
 async def upload_base64_image_to_cloudinary(base64_str: str) -> str:
-
-    # Cloudinary expects a data URI scheme with MIME type prefix
     data_uri = f"data:image/jpeg;base64,{base64_str}"
+
     try:
+        logger.info("Attempting Cloudinary upload...")
         resp = cloudinary.uploader.upload(data_uri)
-        url = resp.get("secure_url") # Get the secure URL of the uploaded image
+        logger.info(f"Cloudinary response: {resp}")
+        url = resp.get("secure_url")
         if not url:
             logger.error("No URL returned from Cloudinary")
             raise Exception("No URL returned from Cloudinary")
         return url
-    
-    # Handle Cloudinary upload errors
+
     except Exception as e:
-        logger.error(f"Cloudinary upload error: {e}")
+        logger.exception("Cloudinary upload error")
         raise HTTPException(status_code=500, detail="Failed to upload image")

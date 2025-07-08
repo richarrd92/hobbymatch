@@ -21,8 +21,6 @@ DROP TABLE IF EXISTS
     messages,
     matches,
     user_hobbies,
-    hobby_tags,
-    tags,
     hobbies,
     users,
     locations 
@@ -49,7 +47,25 @@ CREATE TYPE match_status AS ENUM ('pending', 'accepted', 'rejected', 'completed'
 CREATE TYPE match_type AS ENUM ('social', 'trade', 'mutual'); -- Match type: social = shared interest, trade = skill exchange, mutual = equal skillset
 CREATE TYPE user_role AS ENUM ('user', 'moderator', 'admin'); -- User role for access control and permissions
 CREATE TYPE notification_type AS ENUM ('match_request', 'message', 'review', 'system'); -- Types of notifications sent to users
-CREATE TYPE hobby_category AS ENUM ('sports', 'entertainment', 'education', 'games', 'arts', 'technology', 'outdoors', 'other'); -- Categories of hobbies for filtering and organization
+CREATE TYPE hobby_category AS ENUM (
+  'Sports',
+  'Outdoors',
+  'Creative',
+  'Music',
+  'Culinary',
+  'Crafts',
+  'Tech',
+  'Games',
+  'Lifestyle',
+  'Wellness',
+  'Fitness',
+  'Entertainment',
+  'Nature',
+  'Finance',
+  'Community',
+  'Academic'
+);
+
 CREATE TYPE reaction_type AS ENUM ('like', 'love', 'fire', 'laugh', 'sad'); -- Types of reactions users can give to posts
 CREATE TYPE rsvp_status AS ENUM ('going', 'interested', 'not_going', 'flaked', 'attended'); -- RSVP status for events and live spots
 CREATE TYPE event_type AS ENUM ('virtual', 'in-person'); -- Event type for meetups
@@ -90,43 +106,29 @@ CREATE TABLE users (
 -- Table: hobbies
 -- Central list of all hobby/skill options users can select
 CREATE TABLE hobbies (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(), -- Unique hobby ID
-    name VARCHAR(100) NOT NULL UNIQUE, -- Hobby name (e.g., Soccer, Painting)
-    category hobby_category NOT NULL, -- Hobby category for filtering
-    created_by UUID, -- FK to user who added this hobby (optional)
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    name VARCHAR(100) NOT NULL UNIQUE,
+    category hobby_category NOT NULL,
+    created_by UUID, -- Should be an admin (enforced in app logic)
+    is_active BOOLEAN DEFAULT TRUE, -- Can deactivate without deleting
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL
-);
-
--- Table: tags
--- Metadata keywords attached to hobbies for enhanced filtering
-CREATE TABLE tags (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(), -- Unique tag ID
-    name VARCHAR(50) UNIQUE NOT NULL -- Tag keyword (e.g., 'team sport')
-);
-
--- Table: hobby_tags
--- Many-to-many linking table between hobbies and tags
-CREATE TABLE hobby_tags (
-    hobby_id UUID NOT NULL, -- FK to hobby
-    tag_id UUID NOT NULL, -- FK to tag
-    PRIMARY KEY (hobby_id, tag_id), -- Composite primary key
-    FOREIGN KEY (hobby_id) REFERENCES hobbies(id) ON DELETE CASCADE, 
-    FOREIGN KEY (tag_id) REFERENCES tags(id) ON DELETE CASCADE
 );
 
 -- Table: user_hobbies
 -- Links users to their hobbies with rank for matching priority
 CREATE TABLE user_hobbies (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(), -- Unique relation ID
-    user_id UUID NOT NULL, -- FK to user
-    hobby_id UUID NOT NULL, -- FK to hobby
-    rank INTEGER CHECK (rank BETWEEN 1 AND 3), -- Priority ranking for matching (optional)
+    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    user_id UUID NOT NULL,
+    hobby_id UUID NOT NULL,
+    rank INTEGER NOT NULL CHECK (rank BETWEEN 1 AND 3), -- Must be 1, 2, or 3
     added_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
     FOREIGN KEY (hobby_id) REFERENCES hobbies(id) ON DELETE CASCADE,
-    UNIQUE(user_id, hobby_id) -- Prevent duplicate hobby entries per user
+    UNIQUE(user_id, hobby_id),
+    UNIQUE(user_id, rank) -- Prevent duplicate ranks (i.e., only one rank 1, 2, 3)
 );
+
 
 -- Table: matches
 -- Stores match requests and accepted matches between users based on hobbies
