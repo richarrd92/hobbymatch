@@ -187,7 +187,16 @@ export default function EditProfile({ user, triggerRefresh }) {
   };
   const handleDenyLocation = () => setShowLocationPrompt(false);
 
-  // Resolve location
+  const addNoise = (value, range = 0.05) => {
+    const noise = (Math.random() * 2 - 1) * range; // ±range
+    return value + noise;
+  };
+
+  const roundCoordinate = (value, decimals = 1) => {
+    const factor = 10 ** decimals;
+    return Math.round(value * factor) / factor;
+  };
+
   const detectLocationAndResolve = () => {
     if (!navigator.geolocation) {
       alert("Geolocation is not supported by your browser");
@@ -197,11 +206,20 @@ export default function EditProfile({ user, triggerRefresh }) {
     setLoading(true);
     setErrorMsg("");
 
-    // Get user's current location
     navigator.geolocation.getCurrentPosition(
       async (position) => {
-        const { latitude, longitude } = position.coords;
+        // Add random noise (~±5km) and round to 1 decimal (~11km accuracy)
+        const latitude = roundCoordinate(
+          addNoise(position.coords.latitude, 0.05),
+          1
+        );
+        const longitude = roundCoordinate(
+          addNoise(position.coords.longitude, 0.05),
+          1
+        );
+
         try {
+          console.log("Blurred & rounded coordinates:", latitude, longitude);
           const locationData = await resolveLocation(latitude, longitude);
           setResolvedLocation(locationData);
           setForm((prev) => ({ ...prev, location_id: locationData.id }));
@@ -219,6 +237,7 @@ export default function EditProfile({ user, triggerRefresh }) {
       }
     );
   };
+  
 
   // Ranked hobbies
   const handleRankUpdate = (updatedHobbies) => {

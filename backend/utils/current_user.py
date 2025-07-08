@@ -8,6 +8,7 @@ from models import User
 from database import get_db
 from logger import logger
 from utils.firebase_token import verify_firebase_token
+import random
 
 # Initialize Firebase Admin SDK once
 if not firebase_admin._apps:
@@ -43,3 +44,8 @@ async def get_current_user(
 
     logger.info("User authenticated")
     return user # Return the user
+
+# Blur and round a coordinate to protect user privacy
+def blur_and_round(value: float, range: float = 0.02, decimals: int = 1) -> float:
+    noise = random.uniform(-range, range)
+    return round(value + noise, decimals)
