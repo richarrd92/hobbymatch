@@ -27,7 +27,7 @@ if not DATABASE_URL.startswith("postgresql+asyncpg://"):
     sys.exit(1)
 
 # Create async engine
-engine = create_async_engine(DATABASE_URL, echo=True, future=True)
+engine = create_async_engine(DATABASE_URL, echo=False, future=True)
 
 # Async session factory
 SessionLocal = sessionmaker(
@@ -48,8 +48,7 @@ async def get_db():
 async def test_db_connection():
     try:
         async with engine.connect() as conn:
-            result = await conn.execute(text("SELECT 1"))
-            logger.info(f"DB test successful: {result.scalar()}")
+            await conn.execute(text("SELECT 1"))
             logger.info("HobbyMatch DB connection initialized.")
     except Exception as e:
         logger.error(f"DB test failed: {e}")

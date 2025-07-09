@@ -1,6 +1,6 @@
 # Progress Checkpoint  
 
-This document outlines the current development status of the application, including implemented features. Below are video walkthroughs showcasing the progress of the application in action:
+This document highlights the ongoing development milestones of HobbyMatch. It includes feature updates and video walkthroughs that demonstrate the app’s evolution over time. Each entry provides a visual snapshot of progress at key stages in development.
 
 #### Video Walkthrough
 
@@ -21,5 +21,15 @@ This document outlines the current development status of the application, includ
     </a>
     <a href="https://www.loom.com/share/9f4b154995e4439e8328bdff8f58b350">
       <img style="max-width:300px;" src="https://cdn.loom.com/sessions/thumbnails/9f4b154995e4439e8328bdff8f58b350-45ed307587c1e7ff-full-play.gif">
+    </a>
+  </div>
+
+**Date:** July 9, 2025
+
+<div>
+    <a href="https://www.loom.com/share/f72a58af456c4d83b0d18b546803f9bc">
+    </a>
+    <a href="https://www.loom.com/share/f72a58af456c4d83b0d18b546803f9bc">
+      <img style="max-width:300px;" src="https://cdn.loom.com/sessions/thumbnails/f72a58af456c4d83b0d18b546803f9bc-6a4f8049d51ba0c9-full-play.gif">
     </a>
   </div>

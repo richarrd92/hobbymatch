@@ -29,6 +29,9 @@ def setup_logger(log_file="app.log", level=logging.INFO):
 # Create a global logger instance
 logger = setup_logger()
 
+# Suppress noisy SQLAlchemy engine logs
+logging.getLogger("sqlalchemy.engine").setLevel(logging.WARNING)
+
 # Example usage
 if __name__ == "__main__":
     logger.info("Logger initialized")

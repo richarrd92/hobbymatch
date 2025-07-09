@@ -201,3 +201,10 @@ export async function deleteHobby(hobbyId) {
 
   return true;
 }
+
+// Fetch hobby by ID (public)
+export async function fetchHobbyById(hobbyId) {
+  const res = await fetch(`${HOBBIES_URL}/${hobbyId}`);
+  if (!res.ok) throw new Error("Failed to fetch hobby by ID");
+  return await res.json();
+}

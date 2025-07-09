@@ -45,7 +45,7 @@ async def signup_user(signup: SignupRequest, db: AsyncSession = Depends(get_db))
     await db.refresh(new_user)
 
     # Return user info
-    logger.info(f"User signed up (verified={is_verified}, method={verification_method})")
+    logger.info(f"{User.name} signed up")
     return {
         "token": signup.id_token,
         "role": new_user.role,
@@ -70,7 +70,7 @@ async def login_user(login: LoginRequest, db: AsyncSession = Depends(get_db)):
         raise HTTPException(status_code=404, detail="User not found")
 
     # Return user info
-    logger.info("User logged in")
+    logger.info(f"{User.name} logged in")
     return {
         "token": login.id_token,
         "role": user.role,
@@ -82,7 +82,7 @@ async def login_user(login: LoginRequest, db: AsyncSession = Depends(get_db)):
 # Logout endpoint (informs client)
 @router.post("/logout")
 def logout_user():
-    logger.info("User logged out")
+    logger.info(f"{User.name} logged out")
     return {"message": "User logged out. Clear token on client side."}
 
 

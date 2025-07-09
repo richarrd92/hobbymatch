@@ -10,8 +10,11 @@ from schemas import UserRead, UserProfileUpdate
 from database import get_db
 from logger import logger
 from utils.admin import require_admin
-from utils.cloudinary import upload_photo_to_cloudinary
+from utils.cloudinary import upload_photo_to_cloudinary, delete_user_cloudinary_folder
 from utils.current_user import get_current_user
+import cloudinary.uploader
+from firebase_admin import auth as firebase_auth
+
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -99,7 +102,6 @@ async def list_users(
         # Execute query
         result = await db.execute(query)
         users = result.scalars().all()
-        logger.info(f"Admin {current_user.email} retrieved {len(users)} users")
         return users
 
     except HTTPException:
@@ -128,7 +130,6 @@ async def get_my_profile(
             logger.error(f"User not found for {current_user.email}")
             raise HTTPException(status_code=404, detail="User not found")
         
-        logger.info(f"Loaded profile for {current_user.email}")
         return user # Return the user
     
     except HTTPException:
@@ -136,6 +137,32 @@ async def get_my_profile(
     except Exception as e:
         logger.error(f"Failed to load user profile for {current_user.email}: {e}")
         raise HTTPException(status_code=500, detail="Failed to load profile")
+
+# Delete the current user's account
+@router.delete("/me")
+async def delete_my_account(
+    db: AsyncSession = Depends(get_db),
+    current_user: User = Depends(get_current_user),
+):
+    try:
+        # Delete Cloudinary folder
+        await delete_user_cloudinary_folder(current_user.id.hex)
+
+        # Delete from Firebase Auth
+        try:
+            firebase_auth.delete_user(current_user.firebase_uid)
+        except Exception as firebase_error:
+            logger.error(f"Firebase deletion failed: {firebase_error}")
+
+        # Delete user from DB
+        await db.delete(current_user)
+        await db.commit()
+        return {"message": "Account deleted successfully"}
+
+    except Exception as e:
+        await db.rollback()
+        logger.error(f"Failed to delete account: {e}")
+        raise HTTPException(status_code=500, detail="Failed to delete user")
 
 # Update the current user's profile with optional fields and profile picture upload
 @router.patch("/me", response_model=UserRead)
@@ -164,9 +191,17 @@ async def update_my_profile(
             if len(file_bytes) > MAX_IMAGE_SIZE_BYTES:
                 logger.error(f"Profile picture too large for user {current_user.email}")
                 raise HTTPException(status_code=400, detail="Profile picture exceeds size limit")
-            profile_pic_url = await upload_photo_to_cloudinary(file_bytes, current_user.id, "profile")
-            updates["profile_pic_url"] = profile_pic_url
-            logger.info(f"Profile pic uploaded for {current_user.email}")
+            
+            # Optional: delete old profile pic from Cloudinary
+            if current_user.profile_pic_public_id:
+                try:
+                    cloudinary.uploader.destroy(current_user.profile_pic_public_id)
+                except Exception as e:
+                    logger.warning(f"Failed to delete old profile pic: {e}")
+
+            upload_result = await upload_photo_to_cloudinary(file_bytes, current_user.id, usage="profile")
+            updates["profile_pic_url"] = upload_result["url"]
+            updates["profile_pic_public_id"] = upload_result["public_id"]
         except Exception as e:
             logger.error(f"Profile pic upload failed for {current_user.email}: {e}")
             raise HTTPException(status_code=500, detail="Failed to upload profile picture")
@@ -199,12 +234,10 @@ async def update_my_profile(
             for rank, hobby_id in enumerate(hobby_ids, start=1)
         ]
         db.add_all(new_user_hobbies)
-        logger.info(f"Updated hobbies for user {current_user.email}")
 
     # Commit all changes
     try:
         await db.commit()
-        logger.info(f"User {current_user.email} updated profile successfully")
     except Exception as e:
         await db.rollback()
         logger.error(f"Failed to update profile for user {current_user.email}: {e}")

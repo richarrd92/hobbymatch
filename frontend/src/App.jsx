@@ -12,9 +12,9 @@ import PageNotFound from "./Pages/PageNotFound";
 import Feed from "./Pages/Feed";
 import EditProfile from "./Pages/EditProfile";
 import UserProfile from "./Pages/UserProfile";
-import dummyPosts from "../src/services/functions/dummyPosts";
 import PrivateRoute from "../src/Pages/PrivateRoute";
 import HomePage from "./Pages/HomePage";
+import CreatePost from "./Pages/CreatePost";
 
 // Main app router and user data fetching with protected routes
 export default function App() {
@@ -87,7 +87,7 @@ export default function App() {
         <Route element={<PrivateRoute />}>
           <Route path="/" element={<ProtectedDashboard />}>
             <Route index element={<Navigate to="feed" replace />} />
-            <Route path="feed" element={<Feed posts={dummyPosts} />} />
+            <Route path="feed" element={<Feed user={user} />} />
             <Route
               path="profile"
               element={
@@ -105,6 +105,10 @@ export default function App() {
                   triggerRefresh={() => setRefreshFlag((prev) => !prev)}
                 />
               }
+            />
+            <Route
+              path="create-post"
+              element={<CreatePost user={user} />}
             />
             <Route path="*" element={<PageNotFound />} />
           </Route>

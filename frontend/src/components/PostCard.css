@@ -1,0 +1,193 @@
+/* Post card styles */
+.post-card {
+  background-color: #1f1f1f;
+  padding: 1rem;
+  border-radius: 16px;
+  margin-bottom: 2rem;
+  color: #f1f1f1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.7);
+  transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+
+/* Hover effect */
+.post-card:hover {
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.8);
+  transform: translateY(-2px);
+}
+
+/* Post header */
+.post-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+/* Avatar */
+.avatar {
+  width: 52px;
+  height: 52px;
+  margin-right: 1rem;
+  border-radius: 50%;
+  border: 2px solid #444;
+  cursor: pointer;
+  object-fit: cover;
+}
+
+/* User info */
+.user-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+/* Username */
+.username,
+.inline-username {
+  font-weight: 600;
+  font-size: 1.1rem;
+  color: #fdfdfd;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: color 0.2s ease;
+  text-align: left;
+}
+
+/* Hover effect */
+.username:hover,
+.inline-username:hover {
+  color: #00bfff;
+}
+
+/* Post meta */
+.post-meta {
+  font-size: 0.85rem;
+  color: #888;
+  margin-top: 0.2rem;
+}
+
+/* Post image */
+.post-image {
+  width: 100%;
+  max-height: 480px;
+  border-radius: 10px;
+  object-fit: cover;
+  margin: 1rem 0;
+  border: 1px solid #333;
+}
+
+/* Post caption */
+.caption {
+  font-size: 1.05rem;
+  line-height: 1.6;
+  color: #ddd;
+  word-break: break-word;
+}
+
+/* Reactions */
+.reactions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+/* Reaction button */
+.reaction-btn {
+  background: rgba(255, 255, 255, 0.05);
+  border: none;
+  color: #ccc;
+  font-size: 0.5rem;
+  padding: 0.3rem 0.1rem;
+  border-radius: 20px;
+  width: 20px;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s;
+  width: 10px;
+}
+
+/* Hover effect */
+.reaction-btn:hover {
+  background: #333;
+  color: #fff;
+}
+
+/* Comments section */
+.comments-section {
+  margin-top: 1rem;
+  border-top: 1px solid #333;
+  padding-top: 0.75rem;
+}
+
+/* Toggle comments button */
+.toggle-comments {
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 0.95rem;
+  cursor: pointer;
+  margin-bottom: 0.5rem;
+}
+
+/* Hover effect */
+.toggle-comments:hover {
+  color: #fff;
+}
+
+/* Comment */
+.comment {
+  margin-top: 0.5rem;
+  font-size: 0.95rem;
+  color: #ccc;
+}
+
+/* Comment form */
+.comment-form {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 0.75rem;
+}
+
+/* Comment form input */
+.comment-form input {
+  flex: 1;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  border: 1px solid #444;
+  background: #282828;
+  color: #eee;
+  font-size: 0.95rem;
+}
+
+/* Comment form button */
+.comment-form button {
+  padding: 0.45rem 1rem;
+  border: none;
+  border-radius: 6px;
+  background-color: #00bfff;
+  color: #fff;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+/* Hover effect */
+.comment-form button:hover {
+  background-color: #009acd;
+}
+
+/* View comments toggle */
+.view-comments-toggle {
+  background: none;
+  border: none;
+  color: #aaa;
+  font-size: 0.95rem;
+  cursor: pointer;
+  margin-top: 0.5rem;
+  transition: color 0.2s ease;
+}
+
+/* Hover effect */
+.view-comments-toggle:hover {
+  color: #fff;
+}

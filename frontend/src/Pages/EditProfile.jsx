@@ -219,7 +219,6 @@ export default function EditProfile({ user, triggerRefresh }) {
         );
 
         try {
-          console.log("Blurred & rounded coordinates:", latitude, longitude);
           const locationData = await resolveLocation(latitude, longitude);
           setResolvedLocation(locationData);
           setForm((prev) => ({ ...prev, location_id: locationData.id }));
@@ -277,10 +276,6 @@ export default function EditProfile({ user, triggerRefresh }) {
           )
           .sort((a, b) => a.rank - b.rank)
           .map((uh) => uh.hobby_id);
-
-        console.log("Hobby IDs to send:", hobbyIdsInOrder);
-        console.log("Raw user hobbies:", userHobbies);
-
         await replaceUserHobbies(hobbyIdsInOrder);
       }
 

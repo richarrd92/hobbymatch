@@ -1,0 +1,143 @@
+/* Create Post Page */
+.create-post-page {
+  width: 682px;
+  max-width: 1000px;
+  min-height: 100vh;
+  background: #1e1e1e;
+  color: white;
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.8);
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 1rem 2rem 2rem 2rem;
+  overflow-y: auto;
+}
+
+/* Create Post title */
+.create-post-page h2 {
+  font-size: 1.4rem;
+  font-weight: 600;
+  margin-bottom: 1rem;
+  text-align: center;
+  color: #eee;
+}
+
+/* Form */
+.create-post-form {
+  width: 100%;
+  border: none;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Labels */
+.create-post-form label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.3rem;
+  font-weight: 500;
+  font-size: 0.95rem;
+  color: #eee;
+  margin-bottom: 0.7rem;
+}
+
+/* Inputs, Textareas, Selects */
+.create-post-form input[type="text"],
+.create-post-form input[type="number"],
+.create-post-form input[type="file"],
+.create-post-form textarea,
+.create-post-form select {
+  width: 100%;
+  padding: 0.5rem 0.7rem;
+  font-size: 0.95rem;
+  background: #2a2a2a;
+  color: #eee;
+  border: 1px solid #555;
+  border-radius: 6px;
+  box-sizing: border-box;
+  transition: border-color 0.2s ease, background-color 0.3s ease;
+}
+
+/* Focus Styles */
+.create-post-form input:focus,
+.create-post-form textarea:focus,
+.create-post-form select:focus {
+  border-color: black;
+  background-color: #1e1e1e;
+  outline: none;
+}
+
+/* Textarea Resize */
+.create-post-form textarea {
+  resize: vertical;
+  min-height: 80px;
+  max-height: 200px;
+}
+
+/* Image preview */
+.image-preview {
+  margin-top: 1rem;
+  max-width: 100%;
+  border-radius: 8px;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.7);
+  object-fit: contain;
+}
+
+/* Error message */
+.error-msg {
+  color: #ff4d4d;
+  font-weight: 600;
+  font-size: 0.9rem;
+  margin-top: 0.75rem;
+}
+
+/* Buttons container */
+.create-post-form > div {
+  margin-top: 1rem;
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-start;
+}
+
+/* Buttons */
+button {
+  padding: 0.5rem 1rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  border-radius: 6px;
+  cursor: pointer;
+  border: none;
+  min-width: 120px;
+  transition: background-color 0.2s ease;
+}
+
+/* Primary button style (Create Post) */
+button[type="submit"] {
+  background-color: black;
+  color: white;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+button[type="submit"]:hover:not(:disabled) {
+  background-color: #111;
+}
+
+/* Disabled button style */
+button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* Secondary button style (Cancel) */
+button[type="button"] {
+  background-color: #444;
+  color: #eee;
+  border: 1px solid #555;
+}
+
+/* Hover effect for secondary button */
+button[type="button"]:hover:not(:disabled) {
+  background-color: #555;
+}

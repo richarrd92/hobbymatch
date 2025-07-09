@@ -6,7 +6,16 @@ Built on a modern full-stack architecture leveraging ***React***, ***FastAPI***,
 
 > **Note:** Each major directory in the project — `/backend` and `/frontend` — includes its own `README.md` file. These contain detailed explanations of the internal architecture, module responsibilities, API usage, and how each layer fits together within the full-stack ecosystem. Contributors are encouraged to read them before diving into the codebase.
 
-> **Progress.md** outlines the current development status of the application, including implemented features through quick video walkthroughs.
+> **Development Status:** Ongoing progress and implemented features are documented through video walkthroughs in the `Progress.md` file.
+
+**Checkpoint:** July 9, 2023
+<div>
+    <a href="https://www.loom.com/share/f72a58af456c4d83b0d18b546803f9bc">
+    </a>
+    <a href="https://www.loom.com/share/f72a58af456c4d83b0d18b546803f9bc">
+      <img style="max-width:300px;" src="https://cdn.loom.com/sessions/thumbnails/f72a58af456c4d83b0d18b546803f9bc-6a4f8049d51ba0c9-full-play.gif">
+    </a>
+</div>
 
 ### Project Objectives
 

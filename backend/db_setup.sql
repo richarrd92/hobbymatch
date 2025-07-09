@@ -93,6 +93,7 @@ CREATE TABLE users (
     age INTEGER CHECK (age > 0), -- Optional age for filtering & verification
     bio TEXT, -- User biography or introduction
     profile_pic_url TEXT, -- URL for profile image/avatar
+    profile_pic_public_id VARCHAR, -- Cloudinary public ID
     location_id UUID, -- FK to locations table (nullable)
     role user_role DEFAULT 'user', -- Role for access control
     is_verified BOOLEAN DEFAULT FALSE, -- Verified user flag (premium/ID verified)
@@ -198,6 +199,7 @@ CREATE TABLE user_posts (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(), -- Unique post ID
     user_id UUID NOT NULL, -- Authoring user
     content TEXT NOT NULL, -- Post content (text, media links)
+    image_public_id VARCHAR, -- Cloudinary image public ID
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- Creation timestamp
     expires_at TIMESTAMP NOT NULL, -- Expiration time (usually created_at + 24h)
     hobby_id UUID, -- Related hobby (optional)

@@ -2,37 +2,24 @@ import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getUserHobbies, fetchAllHobbies } from "../services/API/hobby";
+import formatDate from "../services/functions/formatDate";
 import "./UserProfile.css";
 
-// Displays user's profile info, photos placeholder, and action buttons
+// User profile page showing personal info, hobbies, and actions
 export default function UserProfile({ user }) {
   const { logout } = useAuth();
   const navigate = useNavigate();
-
-  // Format ISO date string to readable local date/time
-  const formatDate = (isoString) => {
-    if (!isoString) return "N/A";
-    return new Date(isoString).toLocaleString(undefined, {
-      dateStyle: "medium",
-      timeStyle: "short",
-    });
-  };
-
-  // Redirect to login if user not logged in
-  if (!user) {
-    return <Navigate to="/login" replace />;
-  }
 
   // Profile details
   const loc = user?.location;
   const [hobbies, setHobbies] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch user hobbies and categories
+  // Fetch user hobbies and match them with all hobby data
   useEffect(() => {
     if (!user) return;
 
-    // Load hobbies and categories
+    // Fetch user hobbies and all hobbies
     async function loadHobbiesAndJoin() {
       setLoading(true);
       try {
@@ -58,11 +45,10 @@ export default function UserProfile({ user }) {
       }
     }
 
-    // Load hobbies when user changes
     loadHobbiesAndJoin();
   }, [user]);
 
-  // Format hobbies for display
+  // Show up to 3 hobbies
   const hobbySlots = Array.from({ length: 3 }, (_, i) => hobbies[i] || null);
 
   return (
@@ -130,7 +116,7 @@ export default function UserProfile({ user }) {
             : "N/A"}
         </p>
 
-        {/* Hobbies */}
+        {/* Hobby list */}
         <div className="user-profile-hobbies">
           <p className="user-profile-text">
             <strong>Hobbies:</strong>

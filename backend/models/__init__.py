@@ -8,11 +8,9 @@ from .matches import Match
 from .messages import Message
 from .reviews import Review
 from .notifications import Notification
-from .post_comments import PostComment
 from .user_hobbies import UserHobby
-from .post_reactions import PostReaction
 from .users import User
-from .user_posts import UserPost
+from .posts import UserPost, PostComment, PostReaction, ReactionType
 from .base import Base
 
 # Export all schemas
@@ -31,11 +29,11 @@ __all__ = [
     "Message",
     "Review",
     "Notification",
-    "PostComment",
     "UserHobby",
-    "PostReaction",
     "User",
     "UserPost",
-    "UserPhoto",
+    "PostComment",
+    "PostReaction",
+    "ReactionType",
     "Base"
 ]

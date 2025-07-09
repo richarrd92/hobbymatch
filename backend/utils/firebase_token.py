@@ -11,7 +11,6 @@ def verify_firebase_token(id_token: str):
         if not decoded.get("email_verified", False):
             logger.error("Email not verified")
             raise HTTPException(status_code=401, detail="Email not verified")
-        logger.info("Token verified")
         return decoded # Decoded token
     
     # Handle token verification errors

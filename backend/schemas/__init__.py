@@ -3,6 +3,7 @@ from .hobbies import HobbyCreate, HobbyRead, HobbyBase, HobbyUpdate, HobbyUpdate
 from .locations import LocationRead, LocationBase, LocationCreate, LocationResolveRequest
 from .matches import MatchRead, MatchBase, MatchCreate
 from .users import UserBase, UserCreate, UserRead, UserProfileUpdate
+from .posts import PostCreate, PostRead, CommentCreate, CommentRead, PostReactionCreate, ReactionType
 
 # Export all schemas
 __all__ = [
@@ -26,5 +27,11 @@ __all__ = [
     "UserRead",
     "UserProfileUpdate",
     "UserHobbyRead",
-    "UserHobbyBase"
+    "UserHobbyBase",
+    "PostCreate",
+    "PostRead",
+    "CommentCreate",
+    "CommentRead",
+    "PostReactionCreate",
+    "ReactionType"
 ]

@@ -33,6 +33,10 @@ export default function HomePage({ user }) {
         <button className="sidebar-btn" onClick={() => navigate("/profile")}>
           Profile
         </button>
+        {/* Navigate to Create post */}
+        <button className="sidebar-btn" onClick={() => navigate("/create-post")}>
+          Create Post
+        </button>
         <button className="sidebar-btn" onClick={() => navigate("/feed")}>
           <span style={{ color: "lightgray" }}>More Coming soon</span>
         </button>

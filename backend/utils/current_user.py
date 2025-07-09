@@ -14,7 +14,6 @@ import random
 if not firebase_admin._apps:
     cred = credentials.Certificate("./secrets/hobbymatch-app-firebase-adminsdk-fbsvc-2e7e43ad02.json")
     initialize_app(cred)
-    logger.info("Firebase Admin SDK initialized")
 
 security = HTTPBearer() # HTTP Bearer scheme for token auth
 
@@ -41,8 +40,6 @@ async def get_current_user(
     if not user:
         logger.error("User not found")
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail="User not found")
-
-    logger.info("User authenticated")
     return user # Return the user
 
 # Blur and round a coordinate to protect user privacy

@@ -208,6 +208,5 @@ async def replace_my_hobbies(
         await db.rollback()
         raise
     
-    logger.info("Hobbies updated")
     return new_user_hobbies
 
