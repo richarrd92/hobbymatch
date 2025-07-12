@@ -1,5 +1,4 @@
 from fastapi import HTTPException
-import hashlib
 import asyncio
 from logger import logger
 import os
@@ -24,13 +23,30 @@ cloudinary.config(
 # TODO: Change size if needed
 MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024 # 5MB
 
-# Upload image and return its URL and Cloudinary public_id
 async def upload_photo_to_cloudinary(file_bytes: bytes, user_id: int, usage: str = "post") -> dict:
+    """
+    Upload an image file (raw bytes) to Cloudinary under a user-specific folder with usage context
+
+    Parameters:
+    - file_bytes (bytes): Raw bytes of the image to upload.
+    - user_id (int): Unique ID of the user uploading the image; used for folder pathing.
+    - usage (str): Purpose of the image, either 'post' or 'profile' (default 'post').
+
+    Returns:
+    - dict: Contains 'url' (secure URL of uploaded image) and 'public_id' (Cloudinary identifier).
+
+    Raises:
+    - HTTPException 400 if the image size exceeds the limit or usage is invalid.
+    - HTTPException 500 if upload fails after retries.
+    """
+
+    # Check image size
     if len(file_bytes) > MAX_IMAGE_SIZE_BYTES:
         max_mb = MAX_IMAGE_SIZE_BYTES / (1024 * 1024)
         logger.error(f"Image too large for user {user_id}: {max_mb:.1f} MB")
         raise HTTPException(status_code=400, detail=f"Image too large (max {max_mb:.1f} MB)")
 
+    # Check usage
     if usage not in ["post", "profile"]:
         raise HTTPException(status_code=400, detail="Invalid usage type. Must be 'post' or 'profile'.")
 
@@ -41,6 +57,7 @@ async def upload_photo_to_cloudinary(file_bytes: bytes, user_id: int, usage: str
     unique_suffix = uuid.uuid4().hex[:10]
     public_id = f"{folder}/{usage}_{unique_suffix}"
 
+    # Upload to Cloudinary
     for attempt in range(3):
         try:
             resp = cloudinary.uploader.upload(
@@ -65,9 +82,20 @@ async def upload_photo_to_cloudinary(file_bytes: bytes, user_id: int, usage: str
             else:
                 raise HTTPException(status_code=500, detail="Failed to upload image to Cloudinary")
             
-
-# Upload base64 image to Cloudinary, return URL
 async def upload_base64_image_to_cloudinary(base64_str: str) -> str:
+    """
+    Upload a base64-encoded image string to Cloudinary and return the accessible URL
+
+    Parameters:
+    - base64_str (str): Base64 encoded image data (without data URI prefix).
+
+    Returns:
+    - str: Secure URL of the uploaded image.
+
+    Raises:
+    - HTTPException 500 if the upload fails or no URL is returned.
+    """
+
     data_uri = f"data:image/jpeg;base64,{base64_str}"
 
     try:
@@ -84,6 +112,20 @@ async def upload_base64_image_to_cloudinary(base64_str: str) -> str:
     
 
 async def delete_user_cloudinary_folder(user_id: str):
+    """
+    Delete all Cloudinary resources under the folder associated with the given user,
+    then delete the folder itself.
+
+    Parameters:
+    - user_id (str): The user ID string, used to identify the Cloudinary folder to delete.
+
+    Returns:
+    - None
+
+    Raises:
+    - HTTPException 500 if deletion of resources or folder fails.
+    """
+
     try:
         folder_path = f"user_photos/{user_id}"
         cloudinary.api.delete_resources_by_prefix(folder_path)

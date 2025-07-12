@@ -5,7 +5,7 @@ import {
   Route,
   Navigate,
 } from "react-router-dom";
-import { useAuth } from "./contexts/AuthContext";
+import { useAuth } from "./services/auth/AuthProvider";
 import SignUp from "./Pages/SignUp";
 import Login from "./Pages/Login";
 import PageNotFound from "./Pages/PageNotFound";
@@ -16,7 +16,17 @@ import PrivateRoute from "../src/Pages/PrivateRoute";
 import HomePage from "./Pages/HomePage";
 import CreatePost from "./Pages/CreatePost";
 
-// Main app router and user data fetching with protected routes
+
+/**
+ * Main application component managing routing, authentication state, 
+ * and user data fetching.
+ *
+ * Fetches current user info from backend when authentication token changes.
+ * Uses protected routes to guard user-only pages.
+ *
+ * @component
+ * @returns {JSX.Element} The app router with routes for login, signup, feed, profile, etc.
+ */
 export default function App() {
   const { token } = useAuth();
 
@@ -26,12 +36,19 @@ export default function App() {
   const [userError, setUserError] = useState(null);
   const [refreshFlag, setRefreshFlag] = useState(false);
 
-  // Fetch current user info when token or refreshFlag changes
   useEffect(() => {
+    /**
+     * Fetches the current user's profile data from the backend API.
+     * Triggers when token or refreshFlag changes.
+     * Updates the user state and loading/error flags accordingly.
+     *
+     * @async
+     * @throws {Error} - If the response is not OK.
+     */
     const fetchUser = async () => {
       setLoadingUser(true);
       try {
-        const res = await fetch("http://localhost:8000/users/me", {
+        const response = await fetch("http://localhost:8000/users/me", {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${token}`,
@@ -39,10 +56,10 @@ export default function App() {
         });
 
         // Throw error if response not ok
-        if (!res.ok) throw new Error(await res.text());
+        if (!response.ok) throw new Error(await response.text());
 
         // Set user info
-        const data = await res.json();
+        const data = await response.json();
         setUser(data);
       } catch (err) {
         setUserError(err.message);
@@ -65,7 +82,10 @@ export default function App() {
   if (loadingUser) return <div>Loading user info...</div>;
   if (userError) return <div>Error loading user: {userError}</div>;
 
-  // Dashboard wrapper with layout components and nested routing
+  /**
+   * Protected dashboard component wrapping the home page.
+   * @returns {JSX.Element} HomePage component with user info.
+   */
   function ProtectedDashboard() {
     return <HomePage user={user} />;
   }
@@ -87,7 +107,7 @@ export default function App() {
         <Route element={<PrivateRoute />}>
           <Route path="/" element={<ProtectedDashboard />}>
             <Route index element={<Navigate to="feed" replace />} />
-            <Route path="feed" element={<Feed user={user} />} />
+            <Route path="feed" element={<Feed user={user} token={token} />} />
             <Route
               path="profile"
               element={
@@ -106,14 +126,10 @@ export default function App() {
                 />
               }
             />
-            <Route
-              path="create-post"
-              element={<CreatePost user={user} />}
-            />
+            <Route path="create-post" element={<CreatePost user={user} />} />
             <Route path="*" element={<PageNotFound />} />
           </Route>
         </Route>
-
         {/* Catch-all for unknown paths redirects to login */}
         <Route path="*" element={<Navigate to="/login" replace />} />
       </Routes>

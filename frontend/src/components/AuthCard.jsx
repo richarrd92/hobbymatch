@@ -1,7 +1,20 @@
 import { useNavigate } from "react-router-dom";
 import "./AuthCard.css";
 
-// Main Login/SignUp card component
+/**
+ * AuthCard component displays a reusable card for authentication (login/signup).
+ *
+ * @param {Object} props
+ * @param {string} props.title - The title to display on the card
+ * @param {boolean} props.loading - Whether the auth process is in progress
+ * @param {string} props.loadingText - Text to show while loading
+ * @param {string} props.buttonText - Text on the auth button
+ * @param {string} props.errorMsg - Error message to display
+ * @param {Function} props.onAuthClick - Function to call on auth button click
+ * @param {string} props.switchText - Text to show before the switch link
+ * @param {string} props.switchLinkText - Text on the switch link button
+ * @param {string} props.switchRoute - Route to navigate when switch link is clicked
+ */
 export default function AuthCard({
   title,
   loading,
@@ -17,8 +30,8 @@ export default function AuthCard({
 
   return (
     <div className="auth-card">
+      {/* Title text */}
       <h2 className="auth-title">{title}</h2>
-
       {loading ? (
         // Show loading text if loading
         <p className="auth-loading">{loadingText}</p>

@@ -4,7 +4,7 @@ import "./PostCard.css";
 import { reactToPost, addComment } from "../services/API/posts";
 import formatTimestamp from "../services/functions/formatTimestamp";
 
-// Reaction types with corresponding emojis
+/** @type {Object.<string, string>} Mapping of reaction types to emojis */
 const reactionEmojis = {
   like: "👍",
   love: "❤️",
@@ -13,7 +13,16 @@ const reactionEmojis = {
   sad: "😢",
 };
 
-// Post card component
+/**
+ * PostCard component displays a single post with content, reactions, comments, and user profile info.
+ *
+ * @param {Object} props
+ * @param {Object} props.post - The post data
+ * @param {Object} props.currentUser - The currently logged-in user
+ * @param {Function} [props.onReact] - Optional callback to refresh parent state on reaction
+ * @param {Function} [props.onComment] - Optional callback to refresh parent state on comment
+ * @param {Object} props.hobbyMap - Mapping of hobby_id to hobby name
+ */
 export default function PostCard({
   post,
   currentUser,
@@ -25,12 +34,18 @@ export default function PostCard({
   const [commentsVisible, setCommentsVisible] = useState(false);
   const [newComment, setNewComment] = useState("");
 
+  // Navigate to the post author's profile page.
   const handleProfileClick = () => navigate(`/profile/${post.user_id}`);
+
+  /** @type {string} Resolved hobby name or fallback */
   const hobbyName = post.hobby_id
     ? hobbyMap[post.hobby_id] || "Unknown"
     : "General";
 
-  // Send reaction to backend
+  /**
+   * Sends a reaction to the backend and triggers post refresh if provided.
+   * @param {string} type - Reaction type (like, love, etc.)
+   */
   const handleReaction = async (type) => {
     try {
       await reactToPost(post.id, type);
@@ -42,7 +57,11 @@ export default function PostCard({
     }
   };
 
-  // Submit new comment
+  /**
+   * Submits a new comment to the backend and clears input.
+   * Refreshes post if callback provided.
+   * @param {React.FormEvent} e
+   */
   const handleCommentSubmit = async (e) => {
     e.preventDefault();
     if (!newComment.trim()) return;
@@ -70,6 +89,7 @@ export default function PostCard({
           className="avatar"
           onClick={handleProfileClick}
         />
+        {/* User info */}
         <div className="user-info">
           <button className="username" onClick={handleProfileClick}>
             {post.name}
@@ -140,6 +160,7 @@ export default function PostCard({
               onChange={(e) => setNewComment(e.target.value)}
               placeholder="Add a comment..."
             />
+            {/* Add a submit button */}
             <button type="submit" disabled={!newComment.trim()}>
               Post
             </button>

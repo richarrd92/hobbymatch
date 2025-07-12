@@ -1,9 +1,10 @@
+// Initial array of dummy post objects for testing/display purposes
 const dummyPosts = [
   {
     id: 1,
     user: "johndoe",
-    avatar: "https://i.pravatar.cc/150?img=3",
-    image: "https://images.unsplash.com/photo-1605296867304-46d5465a13f1", 
+    avatar: "https://i.pravatar.cc/150?img=3", // User avatar image URL
+    image: "https://images.unsplash.com/photo-1605296867304-46d5465a13f1", // Post image URL
     caption: "Loving the gym grind today!",
     hobby: "Fitness",
     timestamp: "2 hours ago",
@@ -12,7 +13,7 @@ const dummyPosts = [
     id: 2,
     user: "janesmith",
     avatar: "https://i.pravatar.cc/150?img=5",
-    image: "https://images.unsplash.com/photo-1508780709619-79562169bc64", 
+    image: "https://images.unsplash.com/photo-1508780709619-79562169bc64",
     caption: "Nature heals 🌿",
     hobby: "Outdoors",
     timestamp: "5 hours ago",
@@ -21,7 +22,7 @@ const dummyPosts = [
     id: 3,
     user: "michaelc",
     avatar: "https://i.pravatar.cc/150?img=12",
-    image: "https://images.unsplash.com/photo-1511376777868-611b54f68947", 
+    image: "https://images.unsplash.com/photo-1511376777868-611b54f68947",
     caption: "Late-night jam sessions hit different 🎸",
     hobby: "Music",
     timestamp: "8 hours ago",
@@ -30,7 +31,7 @@ const dummyPosts = [
     id: 4,
     user: "anika_p",
     avatar: "https://i.pravatar.cc/150?img=9",
-    image: "https://images.unsplash.com/photo-1529107386315-e1a2ed48a620", 
+    image: "https://images.unsplash.com/photo-1529107386315-e1a2ed48a620",
     caption: "Experimenting with watercolor techniques today!",
     hobby: "Art",
     timestamp: "1 day ago",

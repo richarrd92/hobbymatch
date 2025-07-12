@@ -33,3 +33,13 @@ This document highlights the ongoing development milestones of HobbyMatch. It in
       <img style="max-width:300px;" src="https://cdn.loom.com/sessions/thumbnails/f72a58af456c4d83b0d18b546803f9bc-6a4f8049d51ba0c9-full-play.gif">
     </a>
   </div>
+
+**Date:** July 12, 2025
+
+  <div>
+    <a href="https://www.loom.com/share/e387ed67a36f4c9aa977133eed141924">
+    </a>
+    <a href="https://www.loom.com/share/e387ed67a36f4c9aa977133eed141924">
+      <img style="max-width:300px;" src="https://cdn.loom.com/sessions/thumbnails/e387ed67a36f4c9aa977133eed141924-86e0d40cf4bdba32-full-play.gif">
+    </a>
+  </div>

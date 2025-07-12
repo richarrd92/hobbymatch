@@ -76,3 +76,34 @@ This will:
 - Cloudinary is used for uploading and serving profile images. The backend handles secure media uploads and returns optimized URLs.
 - Firebase handles user authentication via Google Sign-In, with restricted domain checks and token validation.
 - UUIDs are used for primary keys to improve scalability and uniqueness across distributed systems.
+- Redis is used for WebSocket message broadcasting across multiple server instances, so the Redis server must be running globally in your environment during development.
+
+#### Redis Installation
+
+To enable WebSocket broadcasting with Redis during development, you need to install the Redis server globally on your computer.
+
+1. **Install Redis via Homebrew (recommended):**
+
+```bash
+brew install redis
+```
+
+2. **Start Redis Server:**
+
+```bash
+redis-server
+```
+
+**Note:** Make sure to start the Redis server before running the FastAPI server.You can keep this running in a separate terminal tab/window while developing.
+
+3. **(Optional) Run Redis as a background service:**   
+```bash
+brew services start redis
+```
+4. **Verify Redis is running:**   
+```bash
+redis-cli ping
+```
+If it returns `PONG`, Redis is running successfully.
+
+> Note: You do not install the Redis server inside the Python virtual environment. Only the Python Redis client package (redis) should be installed in your virtual environment. For production deployment, Redis should be hosted as a managed service or on your production infrastructure, not bundled with your app or installed on end users' devices.

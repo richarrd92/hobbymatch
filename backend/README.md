@@ -22,6 +22,7 @@ This is the backend for HobbyMatch, a social platform for connecting users based
 - Cloudinary SDK (image upload and storage)
 - Pydantic
 - Uvicorn
+- Redis
 
 ### Directory Structure
 
@@ -32,6 +33,8 @@ backend/
 ├── models/              # SQLAlchemy ORM models
 ├── schemas/             # Pydantic request/response schemas
 ├── routes/              # API endpoints
+├── utils/               # Utility functions
+├── docs/                # Detailed backend documentation
 ├── db_setup.sql         # Database setup schema
 ├── backend.sh           # Python script to start backend server
 ├── logger.py            # Shared logging config

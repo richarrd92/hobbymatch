@@ -4,6 +4,15 @@ import { fetchAllHobbies } from "../services/API/hobby";
 import { createPost } from "../services/API/posts";
 import "./CreatePost.css";
 
+/**
+ * CreatePost component allows users to create a new post with optional image
+ * and hobby association. It manages form state, handles input changes, image
+ * validation, and submits the post data to the backend. Redirects to the feed
+ * on successful submission.
+ *
+ * @returns {JSX.Element} The UI for creating a new post with form fields for
+ * caption, hobby tag, and image upload, including error handling and loading states.
+ */
 export default function CreatePost() {
   const navigate = useNavigate();
 
@@ -12,7 +21,12 @@ export default function CreatePost() {
   const [loading, setLoading] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
 
-  // Form data for content and selected hobby
+  /**
+   * @typedef {Object} PostForm
+   * @property {string} content - The caption content of the post
+   * @property {string} hobby_id - The ID of the selected hobby (optional)
+   * @type {[PostForm, Function]} The post form input values
+   */
   const [form, setForm] = useState({
     content: "",
     hobby_id: "",
@@ -22,7 +36,10 @@ export default function CreatePost() {
   const [imageFile, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState("");
 
-  // Fetch hobbies on mount
+  /**
+   * Fetch all hobbies once when component mounts.
+   * Sets hobby options for the hobby select dropdown.
+   */
   useEffect(() => {
     fetchAllHobbies()
       .then(setAllHobbies)
@@ -32,27 +49,37 @@ export default function CreatePost() {
       });
   }, []);
 
-  // Update form input values
+  /**
+   * Handles changes to form input fields.
+   * @param {React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>} e
+   */
   const handleChange = (e) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
   };
 
-  // Validate and preview uploaded image
+  /**
+   * Handles image selection, validates type and size,
+   * and sets preview using FileReader.
+   * @param {React.ChangeEvent<HTMLInputElement>} e
+   */
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
 
+    // Validate file type
     if (!["image/jpeg", "image/png"].includes(file.type)) {
       setErrorMsg("Only JPEG or PNG files are allowed.");
       return;
     }
 
+    // Validate file size
     if (file.size > 5 * 1024 * 1024) {
       setErrorMsg("Max file size is 5MB.");
       return;
     }
 
+    // Update state
     setImageFile(file);
     setErrorMsg("");
 
@@ -61,7 +88,12 @@ export default function CreatePost() {
     reader.readAsDataURL(file);
   };
 
-  // Submit form and create post
+  /**
+   * Submits the post form.
+   * Sends content, hobby ID, and image (if any) to the backend.
+   * Redirects to /feed on success.
+   * @param {React.FormEvent<HTMLFormElement>} e
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (!form.content.trim()) {

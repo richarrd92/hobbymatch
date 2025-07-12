@@ -1,4 +1,4 @@
-import { auth } from "../auth/firebase";
+import { getIdToken } from "../auth/getIdToken";
 
 const BASE_URL = "http://localhost:8000";
 const HOBBIES_URL = `${BASE_URL}/hobbies`;
@@ -24,42 +24,48 @@ const VALID_CATEGORIES = [
   "Academic",
 ];
 
-// Helper: Get Firebase ID Token for Authorization
-async function getIdToken() {
-  const currentUser = auth.currentUser;
-  if (!currentUser) throw new Error("User not logged in");
-  return await currentUser.getIdToken(true);
-}
 
-// Hobby Categories (public)
+/**
+ * Fetch public list of hobby categories.
+ * @returns {Promise<string[]>} Array of category names.
+ */
 export async function fetchHobbyCategories() {
-  const res = await fetch(`${HOBBIES_URL}/categories`);
-  if (!res.ok) throw new Error("Failed to fetch hobby categories");
-  return await res.json();
+  const response = await fetch(`${HOBBIES_URL}/categories`);
+  if (!response.ok) throw new Error("Failed to fetch hobby categories");
+  return await response.json();
 }
 
-// All Hobbies (public)
+/**
+ * Fetch all hobbies (public).
+ * @returns {Promise<object[]>} Array of hobby objects.
+ */
 export async function fetchAllHobbies() {
-  const res = await fetch(HOBBIES_URL);
-  if (!res.ok) throw new Error("Failed to fetch hobbies");
-  return await res.json();
+  const response = await fetch(HOBBIES_URL);
+  if (!response.ok) throw new Error("Failed to fetch hobbies");
+  return await response.json();
 }
 
-// User Hobbies - get current user's hobbies
+/**
+ * Get the current user's selected hobbies.
+ * Requires user to be authenticated.
+ * @returns {Promise<object[]>} Array of user's hobby objects.
+ */
 export async function getUserHobbies() {
   const idToken = await getIdToken();
-  const res = await fetch(USER_HOBBIES_GET_URL, {
+  const response = await fetch(USER_HOBBIES_GET_URL, {
     headers: { Authorization: `Bearer ${idToken}` },
   });
 
   // Throw error if response not ok
-  if (!res.ok) throw new Error("Failed to fetch user hobbies");
-  return await res.json();
+  if (!response.ok) throw new Error("Failed to fetch user hobbies");
+  return await response.json();
 }
 
-// User Hobbies - replace current user's hobbies with array of hobby objects
-// Endpoint: PUT /hobbies/users/me/hobbies
-// Input: array of {name: string, category: string}
+/**
+ * Replace the user's hobbies using full hobby objects.
+ * @param {object[]} hobbyObjs - Array of { name, category } objects.
+ * @returns {Promise<object[]>} Updated hobbies.
+ */
 export async function replaceUserHobbiesWithObjects(hobbyObjs) {
   if (!Array.isArray(hobbyObjs)) throw new Error("Input must be an array");
   if (hobbyObjs.length > 3) {
@@ -75,7 +81,7 @@ export async function replaceUserHobbiesWithObjects(hobbyObjs) {
 
   // Send request
   const idToken = await getIdToken();
-  const res = await fetch(USER_HOBBIES_GET_URL, {
+  const response = await fetch(USER_HOBBIES_GET_URL, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -85,19 +91,21 @@ export async function replaceUserHobbiesWithObjects(hobbyObjs) {
   });
 
   // Throw error if response not ok
-  if (!res.ok) {
-    const errData = await res.json().catch(() => ({}));
+  if (!response.ok) {
+    const errData = await response.json().catch(() => ({}));
     throw new Error(
       errData.detail || "Failed to replace user hobbies with objects"
     );
   }
 
-  return await res.json();
+  return await response.json();
 }
 
-// User Hobbies - replace current user's hobbies with array of hobby IDs
-// Endpoint: PUT /hobbies/me
-// Input: { hobby_ids: string[] }
+/**
+ * Replace the user's hobbies using an array of hobby IDs.
+ * @param {string[]} hobbyIds - Array of hobby ID strings.
+ * @returns {Promise<object[]>} Updated hobbies.
+ */
 export async function replaceUserHobbies(hobbyIds) {
   if (!Array.isArray(hobbyIds)) throw new Error("Input must be an array");
   if (hobbyIds.length > 3) {
@@ -106,7 +114,7 @@ export async function replaceUserHobbies(hobbyIds) {
 
   // Send request
   const idToken = await getIdToken();
-  const res = await fetch(USER_HOBBIES_PUT_URL, {
+  const response = await fetch(USER_HOBBIES_PUT_URL, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -116,16 +124,21 @@ export async function replaceUserHobbies(hobbyIds) {
   });
 
   // Throw error if response not ok
-  if (!res.ok) {
-    const errData = await res.json().catch(() => ({}));
+  if (!response.ok) {
+    const errData = await response.json().catch(() => ({}));
     console.error("422 validation error details:", errData);
     throw new Error(errData.detail || "Failed to replace user hobbies");
   }
 
-  return await res.json();
+  return await response.json();
 }
 
-// Admin: create a new hobby
+/**
+ * Admin: Create a new hobby.
+ * @param {string} name - Name of the new hobby.
+ * @param {string} category - Valid category name.
+ * @returns {Promise<object>} Created hobby object.
+ */
 export async function createHobby(name, category) {
   if (!VALID_CATEGORIES.includes(category)) {
     throw new Error(`Invalid category: ${category}`);
@@ -133,7 +146,7 @@ export async function createHobby(name, category) {
 
   // Send request
   const idToken = await getIdToken();
-  const res = await fetch(HOBBIES_URL, {
+  const response = await fetch(HOBBIES_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -143,15 +156,21 @@ export async function createHobby(name, category) {
   });
 
   // Throw error if response not ok
-  if (!res.ok) {
-    const errData = await res.json().catch(() => ({}));
+  if (!response.ok) {
+    const errData = await response.json().catch(() => ({}));
     throw new Error(errData.detail || "Failed to create hobby");
   }
 
-  return await res.json();
+  return await response.json();
 }
 
-// Admin: update existing hobby by id
+/**
+ * Admin: Update an existing hobby.
+ * @param {string} hobbyId - ID of the hobby to update.
+ * @param {string} name - New name for the hobby.
+ * @param {string|null} category - Optional new category.
+ * @returns {Promise<object>} Updated hobby object.
+ */
 export async function updateHobby(hobbyId, name, category = null) {
   const idToken = await getIdToken();
 
@@ -165,7 +184,7 @@ export async function updateHobby(hobbyId, name, category = null) {
   }
 
   // Send request
-  const res = await fetch(`${HOBBIES_URL}/${hobbyId}`, {
+  const response = await fetch(`${HOBBIES_URL}/${hobbyId}`, {
     method: "PUT",
     headers: {
       "Content-Type": "application/json",
@@ -175,36 +194,44 @@ export async function updateHobby(hobbyId, name, category = null) {
   });
 
   // Throw error if response not ok
-  if (!res.ok) {
-    const errData = await res.json().catch(() => ({}));
+  if (!response.ok) {
+    const errData = await response.json().catch(() => ({}));
     throw new Error(errData.detail || "Failed to update hobby");
   }
 
-  return await res.json();
+  return await response.json();
 }
 
-// Admin: delete hobby by id
+/**
+ * Admin: Delete a hobby by ID.
+ * @param {string} hobbyId - ID of the hobby to delete.
+ * @returns {Promise<boolean>} True if successful.
+ */
 export async function deleteHobby(hobbyId) {
   const idToken = await getIdToken();
 
   // Send request
-  const res = await fetch(`${HOBBIES_URL}/${hobbyId}`, {
+  const response = await fetch(`${HOBBIES_URL}/${hobbyId}`, {
     method: "DELETE",
     headers: { Authorization: `Bearer ${idToken}` },
   });
 
   // Throw error if response not ok
-  if (!res.ok) {
-    const errData = await res.json().catch(() => ({}));
+  if (!response.ok) {
+    const errData = await response.json().catch(() => ({}));
     throw new Error(errData.detail || "Failed to delete hobby");
   }
 
   return true;
 }
 
-// Fetch hobby by ID (public)
+/**
+ * Fetch a single hobby by ID (public).
+ * @param {string} hobbyId - Hobby ID to fetch.
+ * @returns {Promise<object>} Hobby object.
+ */
 export async function fetchHobbyById(hobbyId) {
-  const res = await fetch(`${HOBBIES_URL}/${hobbyId}`);
-  if (!res.ok) throw new Error("Failed to fetch hobby by ID");
-  return await res.json();
+  const response = await fetch(`${HOBBIES_URL}/${hobbyId}`);
+  if (!response.ok) throw new Error("Failed to fetch hobby by ID");
+  return await response.json();
 }

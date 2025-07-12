@@ -1,19 +1,18 @@
-// API calls that require Firebase auth token for authorization
+import { getIdToken } from "../auth/getIdToken";
 
-import { auth } from "../auth/firebase";
-
-// Get fresh Firebase ID token or throw if no user
-async function getIdToken() {
-  const currentUser = auth.currentUser;
-  if (!currentUser) throw new Error("User not logged in");
-  return await currentUser.getIdToken(true);
-}
-
-// Resolve latitude/longitude to location info via backend
+/**
+ * Resolve latitude and longitude to a human-readable location using backend service.
+ * Requires authentication.
+ * 
+ * @param {number} latitude - Latitude coordinate.
+ * @param {number} longitude - Longitude coordinate.
+ * @returns {Promise<object>} Location data including city, state, etc.
+ */
 export async function resolveLocation(latitude, longitude) {
   const idToken = await getIdToken();
 
-  const res = await fetch("http://localhost:8000/locations/resolve", {
+  // Send request
+  const response = await fetch("http://localhost:8000/locations/resolve", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -22,16 +21,24 @@ export async function resolveLocation(latitude, longitude) {
     body: JSON.stringify({ latitude, longitude }),
   });
 
-  if (!res.ok) throw new Error("Failed to resolve location");
+  // Throw error if response not ok
+  if (!response.ok) throw new Error("Failed to resolve location");
 
-  return await res.json();
+  return await response.json();
 }
 
-// Update current user's profile data via backend PATCH
+/**
+ * Update the current user's profile via backend PATCH request.
+ * Requires authentication.
+ * 
+ * @param {object} profileData - Partial user profile data (e.g., name, location).
+ * @returns {Promise<object>} Updated user profile data.
+ */
 export async function updateUserProfile(profileData) {
   const idToken = await getIdToken();
 
-  const res = await fetch("http://localhost:8000/users/me", {
+  // Send request
+  const response = await fetch("http://localhost:8000/users/me", {
     method: "PATCH",
     headers: {
       "Content-Type": "application/json",
@@ -41,8 +48,8 @@ export async function updateUserProfile(profileData) {
   });
 
   // Parse error details from response if update fails
-  if (!res.ok) {
-    const errData = await res.json();
+  if (!response.ok) {
+    const errData = await response.json();
     throw new Error(
       Array.isArray(errData.detail)
         ? errData.detail.map((e) => e.msg).join(", ")
@@ -50,5 +57,5 @@ export async function updateUserProfile(profileData) {
     );
   }
 
-  return await res.json();
+  return await response.json();
 }

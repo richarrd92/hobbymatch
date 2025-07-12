@@ -1,17 +1,31 @@
 import { useEffect, useState } from "react";
 import PostCard from "../components/PostCard";
 import { fetchAllHobbies } from "../services/API/hobby";
+import {createFeedWebSocket} from "../services/functions/websocket";
 import "./Feed.css";
 
-// Feed Page
-export default function Feed({ user }) {
+/**
+ * Feed component displays the main posts feed for the user.
+ * It fetches all hobbies, fetches posts, listens for real-time updates via WebSocket,
+ * and supports refreshing individual posts upon reactions or comments.
+ *
+ * @param {Object} props
+ * @param {Object} props.user - The current authenticated user object.
+ * @param {string} props.token - Firebase ID token for authenticated API/WebSocket calls.
+ *
+ * @returns {JSX.Element} The feed page UI with posts, loading, and error handling.
+ */
+export default function Feed({ user, token }) {
   const [posts, setPosts] = useState(null);
   const [error, setError] = useState(null);
 
   const [hobbyMap, setHobbyMap] = useState({});
 
-  // Load all hobbies once and map by ID
   useEffect(() => {
+  /**
+   * Loads all hobbies from backend and maps by ID, then sets the hobbyMap state.
+   * Errors are logged to the console.
+   */
     async function loadHobbies() {
       try {
         const allHobbies = await fetchAllHobbies();
@@ -28,7 +42,10 @@ export default function Feed({ user }) {
     loadHobbies();
   }, []);
 
-  // Fetch posts from the backend
+  /**
+   * Fetches posts feed data from backend API and updates state.
+   * On error, sets the error state to display an error message.
+   */
   async function fetchFeed() {
     try {
       const res = await fetch("http://localhost:8000/posts/feed");
@@ -40,16 +57,23 @@ export default function Feed({ user }) {
     }
   }
 
-  // Fetch on mount + refresh every 10s
+  // On mount: fetch initial feed and setup WebSocket for real-time post updates
   useEffect(() => {
-    fetchFeed(); // fetch once on mount
-    const interval = setInterval(() => {
-      fetchFeed(); // refresh every 10 seconds
-    }, 10000);
-    return () => clearInterval(interval); // cleanup on unmount
+    fetchFeed();
+    const socket = createFeedWebSocket(token, { setPosts, refreshPostById });
+
+    // Cleanup WebSocket connection on unmount
+    return () => {
+      socket.close();
+    };
   }, []);
 
-  // Refresh only affected post
+  /**
+   * Fetches an updated post by ID from backend and replaces it in state.
+   * Used to refresh individual post after reactions or comments.
+   *
+   * @param {number} postId - ID of the post to refresh.
+   */
   async function refreshPostById(postId) {
     try {
       const res = await fetch(`http://localhost:8000/posts/${postId}`);

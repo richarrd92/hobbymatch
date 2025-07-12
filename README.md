@@ -4,18 +4,21 @@
 
 Built on a modern full-stack architecture leveraging ***React***, ***FastAPI***, ***PostgreSQL***, and ***Firebase Authentication***. HobbyMatch exemplifies scalable design, robust relational data modeling, and a user-centric approach.
 
+> **Warning:** All installation and setup instructions assume you are using `macOS` and `Visual Studio Code (VSCode)` as your Integrated Development Environment (IDE). If you use a different operating system `Windows | Linux` or another IDE, please adjust commands and procedures accordingly. For example, virtual environment activation commands, package managers, and terminal commands may vary by OS/IDE.
+
 > **Note:** Each major directory in the project — `/backend` and `/frontend` — includes its own `README.md` file. These contain detailed explanations of the internal architecture, module responsibilities, API usage, and how each layer fits together within the full-stack ecosystem. Contributors are encouraged to read them before diving into the codebase.
 
 > **Development Status:** Ongoing progress and implemented features are documented through video walkthroughs in the `Progress.md` file.
 
-**Checkpoint:** July 9, 2023
-<div>
-    <a href="https://www.loom.com/share/f72a58af456c4d83b0d18b546803f9bc">
+**Checkpoint:** July 12, 2025
+
+  <div>
+    <a href="https://www.loom.com/share/e387ed67a36f4c9aa977133eed141924">
     </a>
-    <a href="https://www.loom.com/share/f72a58af456c4d83b0d18b546803f9bc">
-      <img style="max-width:300px;" src="https://cdn.loom.com/sessions/thumbnails/f72a58af456c4d83b0d18b546803f9bc-6a4f8049d51ba0c9-full-play.gif">
+    <a href="https://www.loom.com/share/e387ed67a36f4c9aa977133eed141924">
+      <img style="max-width:300px;" src="https://cdn.loom.com/sessions/thumbnails/e387ed67a36f4c9aa977133eed141924-86e0d40cf4bdba32-full-play.gif">
     </a>
-</div>
+  </div>
 
 ### Project Objectives
 
@@ -47,6 +50,7 @@ HobbyMatch is designed to:
 | Authentication | Firebase                          |
 | Backend        | FastAPI with PostgreSQL           |
 | Image Storage  | Cloudinary                       |
+| Realtime       | Redis (WebSocket message broadcasting) |
 | Hosting        | Firebase                         |
 
 #### High-Level Architecture

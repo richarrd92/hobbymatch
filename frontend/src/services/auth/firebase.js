@@ -6,7 +6,10 @@ import {
   signOut,
 } from "firebase/auth";
 
-// Firebase config from environment variables for security
+/**
+ * Firebase configuration loaded from environment variables.
+ * Keep API keys secure and hidden via Vite env vars (prefix with VITE_).
+ */
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
@@ -16,10 +19,19 @@ const firebaseConfig = {
   appId: import.meta.env.VITE_FIREBASE_APP_ID,
 };
 
-// Initialize Firebase app and auth services
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app); 
-const provider = new GoogleAuthProvider();
+/**
+ * Initializes the Firebase application using the provided config.
+ * Also sets up Firebase Authentication with Google Sign-In.
+ */
+const app = initializeApp(firebaseConfig);     // Firebase app instance
+const auth = getAuth(app);                     // Firebase Auth service
+const provider = new GoogleAuthProvider();     // Google sign-in provider
 
-// Export auth tools for use in app
+/**
+ * Exported tools:
+ * - `auth`: for accessing the current user and auth state
+ * - `provider`: GoogleAuthProvider instance
+ * - `signInWithPopup`: to trigger sign-in via Google
+ * - `signOut`: to log the user out
+ */
 export { auth, provider, signInWithPopup, signOut };

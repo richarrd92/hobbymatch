@@ -1,9 +1,20 @@
 import { Outlet, Navigate, useNavigate } from "react-router-dom";
 import "./HomePage.css";
 
-// Main layout wrapping dashboard, navigation, sidebar, and footer
+/**
+ * HomePage component serves as the main layout wrapper for authenticated users.
+ * It includes a top header with logo and avatar, a left sidebar for navigation,
+ * a main content area where nested routes render, and a footer.
+ * 
+ * Redirects to the login page if no user is provided (unauthenticated).
+ *
+ * @param {Object} props
+ * @param {Object|null} props.user - The currently logged-in user object or null if unauthenticated.
+ *
+ * @returns {JSX.Element} The layout with navigation and nested routes.
+ */
 export default function HomePage({ user }) {
-  const navigate = useNavigate(); // For navigation
+  const navigate = useNavigate();
   // Redirect to login if user not logged in
   if (!user) {
     return <Navigate to="/login" replace />;
@@ -27,7 +38,7 @@ export default function HomePage({ user }) {
       <aside className="left-sidebar">
         {/* Navigate to Feed */}
         <button className="sidebar-btn" onClick={() => navigate("/feed")}>
-          Home
+          Feed
         </button>
         {/* Navigate to Profile */}
         <button className="sidebar-btn" onClick={() => navigate("/profile")}>

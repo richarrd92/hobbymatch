@@ -9,6 +9,16 @@ import {
 } from "../services/API/hobby";
 import "./EditProfile.css";
 
+/**
+ * EditProfile allows a user to update their profile details including
+ * name, age, bio, profile picture, location, and ranked hobbies.
+ *
+ * @param {Object} props
+ * @param {Object} props.user - The logged-in user object.
+ * @param {Function} props.triggerRefresh - Function to refresh user data on success.
+ *
+ * @returns {JSX.Element} Profile editing form.
+ */
 export default function EditProfile({ user, triggerRefresh }) {
   const navigate = useNavigate();
   const [validCategories, setValidCategories] = useState([]);
@@ -37,7 +47,9 @@ export default function EditProfile({ user, triggerRefresh }) {
   const userLocation = user?.location;
   const fromSearchSelectedHobbyIds = userHobbies.map((uh) => uh.hobby_id);
 
-  // Filter hobbies by name
+  /**
+   * Filters all hobbies by search term and ensures no duplicates unless replacing current hobby.
+   */
   const getOptions = (currentHobbyId) =>
     allHobbies.filter(
       (hobby) =>
@@ -46,7 +58,9 @@ export default function EditProfile({ user, triggerRefresh }) {
         hobby.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
-  // Handle ranked hobby changes
+  /**
+   * Handles updating a specific rank with a new hobby.
+   */
   const handleRankedHobbyChange = (rank, newHobbyId) => {
     const updated = [...userHobbies];
     const existingIndex = updated.findIndex((uh) => uh.rank === rank);
@@ -83,7 +97,9 @@ export default function EditProfile({ user, triggerRefresh }) {
   // Clear ranked hobby
   const clearHobby = (rank) => handleRankedHobbyChange(rank, "");
 
-  // Load hobbies and categories
+  /**
+   * Loads hobby options and existing user hobbies.
+   */
   useEffect(() => {
     if (!user) return; // user not yet loaded
 
@@ -128,7 +144,9 @@ export default function EditProfile({ user, triggerRefresh }) {
     }));
   };
 
-  // Profile picture
+  /**
+   * Updates profilePicFile and preview after validation.
+   */
   const handleProfilePicChange = (e) => {
     const file = e.target.files[0];
     if (!file) return;
@@ -152,7 +170,9 @@ export default function EditProfile({ user, triggerRefresh }) {
     reader.readAsDataURL(file);
   };
 
-  // Convert file to base64
+  /**
+   * Converts uploaded image to base64 string.
+   */
   const fileToBase64 = (file) =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -187,16 +207,31 @@ export default function EditProfile({ user, triggerRefresh }) {
   };
   const handleDenyLocation = () => setShowLocationPrompt(false);
 
+  /**
+   * Adds a random noise to a given value within a specified range.
+   * @param {number} value - The value to add noise to.
+   * @param {number} [range=0.05] - The range of the noise (±range).
+   * @returns {number} The value with added noise.
+   */
   const addNoise = (value, range = 0.05) => {
     const noise = (Math.random() * 2 - 1) * range; // ±range
     return value + noise;
   };
 
+  /**
+   * Rounds a given value to a specified number of decimals.
+   * @param {number} value - The value to round.
+   * @param {number} [decimals=1] - The number of decimals to round to.
+   * @returns {number} The rounded value.
+   */
   const roundCoordinate = (value, decimals = 1) => {
     const factor = 10 ** decimals;
     return Math.round(value * factor) / factor;
   };
 
+  /**
+   * Resolves user location via browser geolocation API.
+   */
   const detectLocationAndResolve = () => {
     if (!navigator.geolocation) {
       alert("Geolocation is not supported by your browser");
@@ -218,6 +253,7 @@ export default function EditProfile({ user, triggerRefresh }) {
           1
         );
 
+        // Resolve location
         try {
           const locationData = await resolveLocation(latitude, longitude);
           setResolvedLocation(locationData);
@@ -236,19 +272,21 @@ export default function EditProfile({ user, triggerRefresh }) {
       }
     );
   };
-  
 
   // Ranked hobbies
   const handleRankUpdate = (updatedHobbies) => {
     setUserHobbies(updatedHobbies);
   };
 
-  // On form submit: update user profile and hobbies by IDs (ranks sorted)
+  /**
+   * Submits profile update form, including optional image and hobby ranking.
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setErrorMsg("");
 
+    // Prepare profile data
     try {
       const body = {};
       if (form.name.trim()) body.name = form.name.trim();

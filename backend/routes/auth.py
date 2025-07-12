@@ -10,11 +10,24 @@ from utils.firebase_token import verify_firebase_token
 
 # Define API router for authentication endpoints
 router = APIRouter(prefix="/auth", tags=["Authentication"])
-security = HTTPBearer() # HTTP Bearer scheme for token auth
+security = HTTPBearer() # HTTP Bearer scheme for token-based authentication
 
-# Signup new user using Firebase token
 @router.post("/signup", response_model=LoginResponse)
 async def signup_user(signup: SignupRequest, db: AsyncSession = Depends(get_db)):
+    """
+    Registers a new user using a Firebase ID token.
+
+    Parameters:
+    - signup (SignupRequest): Contains the Firebase `id_token` from the client.
+    - db (AsyncSession): SQLAlchemy async database session injected by FastAPI.
+
+    Returns:
+    - LoginResponse: JSON with the token, user ID, name, email, and role.
+
+    Raises:
+    - HTTPException 400 if the user already exists.
+    """
+
     decoded_token = verify_firebase_token(signup.id_token)
     firebase_uid = decoded_token["uid"]
     email = decoded_token["email"]
@@ -22,14 +35,14 @@ async def signup_user(signup: SignupRequest, db: AsyncSession = Depends(get_db))
     is_verified = decoded_token.get("email_verified", False)
     verification_method = decoded_token.get("firebase", {}).get("sign_in_provider", "unknown")
 
-    # Check if user already exists
+    # Check if user already exists in the database
     result = await db.execute(select(User).where(User.firebase_uid == firebase_uid))
     user = result.scalars().first()
     if user:
         logger.error("User already exists")
         raise HTTPException(status_code=400, detail="User already exists")
 
-    # Create new user
+    # Create new user instance
     new_user = User(
         firebase_uid=firebase_uid,
         name=name,
@@ -39,12 +52,12 @@ async def signup_user(signup: SignupRequest, db: AsyncSession = Depends(get_db))
         verification_method=verification_method,
     )
 
-    # Add new user to database
+    # Add new user to database and commit transaction
     db.add(new_user)
     await db.commit()
     await db.refresh(new_user)
 
-    # Return user info
+    # Log signup event and return user info
     logger.info(f"{User.name} signed up")
     return {
         "token": signup.id_token,
@@ -54,13 +67,26 @@ async def signup_user(signup: SignupRequest, db: AsyncSession = Depends(get_db))
         "email": new_user.email,
     }
 
-# Login existing user via Firebase token
 @router.post("/login", response_model=LoginResponse)
 async def login_user(login: LoginRequest, db: AsyncSession = Depends(get_db)):
+    """
+    Authenticates an existing user using a Firebase ID token.
+
+    Parameters:
+    - login (LoginRequest): Contains the Firebase `id_token` from the client.
+    - db (AsyncSession): SQLAlchemy async database session injected by FastAPI.
+
+    Returns:
+    - LoginResponse: JSON with the token, user ID, name, email, and role.
+
+    Raises:
+    - HTTPException 404 if the user does not exist.
+    """
+
     decoded_token = verify_firebase_token(login.id_token)
     firebase_uid = decoded_token["uid"]
 
-    # Get the user from the database
+    # Look up user by Firebase UID
     result = await db.execute(select(User).where(User.firebase_uid == firebase_uid))
     user = result.scalars().first()
 
@@ -69,8 +95,8 @@ async def login_user(login: LoginRequest, db: AsyncSession = Depends(get_db)):
         logger.error("User not found")
         raise HTTPException(status_code=404, detail="User not found")
 
-    # Return user info
-    logger.info(f"{User.name} logged in")
+    # Log login event and return user info
+    logger.info(f"{user.name} logged in")
     return {
         "token": login.id_token,
         "role": user.role,
@@ -79,10 +105,19 @@ async def login_user(login: LoginRequest, db: AsyncSession = Depends(get_db)):
         "email": user.email,
     }
 
-# Logout endpoint (informs client)
 @router.post("/logout")
 def logout_user():
-    logger.info(f"{User.name} logged out")
+    """
+    Handles logout on the server side (stateless; just returns a message).
+
+    Returns:
+    - dict: Message instructing client to clear token.
+
+    Note:
+    - Since Firebase handles auth tokens, this endpoint simply informs the client
+      to clear their token. No server-side session invalidation is needed.
+    """
+
     return {"message": "User logged out. Clear token on client side."}
 
 

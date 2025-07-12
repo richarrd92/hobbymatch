@@ -1,20 +1,25 @@
 import { createContext, useContext, useEffect, useState } from "react";
-import { firebaseSignIn } from "../services/auth/firebaseAuth";
-import { backendLogin, backendSignup } from "../services/API/auth";
+import { firebaseSignIn } from "./firebaseAuth";
+import { backendLogin, backendSignup } from "../API/auth";
 import {
   saveAuthUser,
   loadAuthUser,
   clearAuthUser,
-} from "../services/functions/authStorage";
+} from "../functions/authStorage";
 
+// React context to provide global authentication state and functions
 const AuthContext = createContext();
 
-// Provides authentication context using Firebase and backend login/signup
+/**
+ * Provides authentication context to app components.
+ * Handles Firebase sign-in and backend login/signup.
+ * Loads from localStorage and syncs across tabs.
+ */
 export function AuthProvider({ children }) {
   const [user, setUser] = useState(null); // Authenticated user data
   const [token, setToken] = useState(null); // Firebase token
 
-  // Load stored auth data on mount
+  // Load auth state from localStorage on component mount
   useEffect(() => {
     const stored = loadAuthUser();
     if (stored) {
@@ -23,7 +28,34 @@ export function AuthProvider({ children }) {
     }
   }, []);
 
-  // Login flow: Firebase sign-in, then backend login or signup
+  // Sync auth state changes across tabs (storage event listener)
+  useEffect(() => {
+    function handleStorageChange(event) {
+      if (event.key === "authUser") {
+        if (!event.newValue) {
+          // User logged out in another tab
+          setUser(null);
+          setToken(null);
+        } else {
+          // User logged in or updated elsewhere in another tab
+          const { user: newUser, token: newToken } = JSON.parse(event.newValue);
+          setUser(newUser);
+          setToken(newToken);
+        }
+      }
+    }
+
+    // Add storage event listener
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, []);
+
+  /**
+   * Handles login flow:
+   * 1. Sign in via Firebase
+   * 2. Try backend login
+   * 3. If user doesn't exist (404), auto-signup via backend
+   */
   const login = async () => {
     try {
       const firebaseToken = await firebaseSignIn();
@@ -50,7 +82,11 @@ export function AuthProvider({ children }) {
     }
   };
 
-  // Logout clears storage and resets state
+  /**
+   * Logs the user out:
+   * - Clears auth state
+   * - Clears localStorage
+   */
   const logout = () => {
     clearAuthUser();
     setUser(null);
@@ -64,7 +100,10 @@ export function AuthProvider({ children }) {
   );
 }
 
-// Custom hook to use auth context
+/**
+ * Hook to access authentication context.
+ * @returns {{ user: object|null, token: string|null, login: Function, logout: Function }}
+ */
 export function useAuth() {
   return useContext(AuthContext);
 }

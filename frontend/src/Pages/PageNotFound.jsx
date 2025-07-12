@@ -1,13 +1,20 @@
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../services/auth/AuthProvider";
 import "./PageNotFound.css";
 
-// 404 page with logout and redirect button
+/**
+ * PageNotFound component renders a 404 error page with a message,
+ * and provides a button that logs the user out and redirects them to the signup page.
+ *
+ * @returns {JSX.Element} A simple 404 page with logout and redirect functionality.
+ */
 export default function PageNotFound() {
-  const { logout } = useAuth(); // Get logout function
-  const navigate = useNavigate(); // For navigation
+  const { logout } = useAuth(); 
+  const navigate = useNavigate(); 
 
-  // Logout and navigate to signup page
+  /**
+   * Handles the logout action and redirects user to the signup page.
+   */
   const handleLogout = () => {
     logout();
     navigate("/signup");

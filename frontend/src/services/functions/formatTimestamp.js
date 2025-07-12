@@ -1,4 +1,10 @@
-// Format time difference into a human-readable string
+/**
+ * Converts a datetime string into a human-readable relative time string
+ * such as "just now", "5 seconds ago", "3 minutes ago", "2 hours ago", or "1 day ago".
+ *
+ * @param {string} datetimeStr - A datetime string parseable by `Date` constructor.
+ * @returns {string} A human-friendly relative time string representing how long ago the datetime was.
+ */
 export default function formatTimestamp(datetimeStr) {
   const date = new Date(datetimeStr);
   const diffMs = Date.now() - date.getTime();

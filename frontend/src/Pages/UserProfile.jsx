@@ -1,11 +1,20 @@
-import { useAuth } from "../contexts/AuthContext";
+import { useAuth } from "../services/auth/AuthProvider";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { getUserHobbies, fetchAllHobbies } from "../services/API/hobby";
 import formatDate from "../services/functions/formatDate";
 import "./UserProfile.css";
 
-// User profile page showing personal info, hobbies, and actions
+/**
+ * UserProfile component displays the user's personal information,
+ * hobbies, and provides actions to edit profile, cancel, or logout.
+ *
+ * @param {Object} props
+ * @param {Object} props.user - The current authenticated user object containing
+ *                              profile details such as name, email, location, hobbies, etc.
+ *
+ * @returns JSX.Element - Rendered user profile page with details and buttons.
+ */
 export default function UserProfile({ user }) {
   const { logout } = useAuth();
   const navigate = useNavigate();
@@ -15,8 +24,9 @@ export default function UserProfile({ user }) {
   const [hobbies, setHobbies] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  // Fetch user hobbies and match them with all hobby data
+  // Effect: Fetch user's hobbies and all hobbies to enrich with names/categories
   useEffect(() => {
+    // Check if user is logged in
     if (!user) return;
 
     // Fetch user hobbies and all hobbies
@@ -28,6 +38,7 @@ export default function UserProfile({ user }) {
           fetchAllHobbies(),
         ]);
 
+        // Enrich user hobbies with names and categories
         const enriched = userHobbyLinks.map((link) => {
           const hobby = allHobbies.find((h) => h.id === link.hobby_id);
           return {
